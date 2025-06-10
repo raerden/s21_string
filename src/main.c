@@ -10,7 +10,7 @@
 // }
 
 int s21_sprintf(char *str, const char *format, ...) {
-  // char allspec[] = "cdieEfgGosuxXpn%";
+    // char allspec[] = "cdieEfgGosuxXpn%";
   char *src = str;  // запомнить указатель на начало строки
 
   va_list arguments;
