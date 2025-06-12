@@ -1,20 +1,36 @@
 CC = gcc
 FLAGS = -Wall -Wextra -Werror -std=c11
-TARGET = main
-SRC = s21_strlen.c s21_strstr.c
+SRC = s21_string.o s21_strlen.o s21_strstr.o
 TEST_LIBS = -lcheck -lm -lpthread -lsubunit
-TEST_SRC = tests.c
 
-$(TARGET):
-	$(CC) $(FLAGS) $(SRC) -o $(TARGET)
+all: clean main
 
-test:
-	$(CC) $(FLAGS) $(SRC) $(TEST_SRC) -I. $(TEST_LIBS) -o tests
+main: $(SRC)
+	$(CC) $(FLAGS) $(SRC) -o main
+
+test: clean
+	checkmk tests.check > tests.c
+	$(CC) $(FLAGS) tests.c -lcheck -lm -lsubunit -o tests
 	./tests
 
-clean:
-	rm -f $(TARGET) ./tests
+lcov: clean
+	$(CC) $(FLAGS) --coverage tests.c -lcheck -lsubunit -lm -o tests
+	./tests
+	lcov --directory . --capture -o coverage.info
+	genhtml --output-directory report --legend coverage.info
+	open report/index.html
 
+clean:
+	rm -fr report ./main ./tests tests.c *.o *.gcov *.gcda *.gcno coverage.info
+
+s21_string.o: s21_string.c
+	$(CC) $(FLAGS) -c s21_string.c
+
+s21_strlen.o: s21_strlen.c
+	$(CC) $(FLAGS) -c s21_strlen.c
+
+s21_strstr.o: s21_strstr.c
+	$(CC) $(FLAGS) -c s21_strstr.c
 
 
 # -I.: Указывает компилятору искать заголовочных файлов (файлов с расширением .h) в текущем каталоге (.). Это полезно, если ваши заголовочные файлы (s21_strstr.h) находятся в той же директории, что и исходные файлы .c.

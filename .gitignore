@@ -5,3 +5,4 @@ gpt/
 t10d16/
 test.check
 .vscode/settings.json
+*.o
