@@ -2,16 +2,158 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include "s21_string.h"
 #include "s21_strlen.c"
-
+#include "s21_strstr.c"
 
 #test s21_strlen_test
-  char *test1 = "Hello world";
-  char *test2 = "123456789\0";
-  char *test3 = "    ";
-  char *test4 = "";
-  ck_assert_int_eq(strlen(test1), s21_strlen(test1));
-  ck_assert_int_eq(strlen(test2), s21_strlen(test2));
-  ck_assert_int_eq(strlen(test3), s21_strlen(test3));
-  ck_assert_int_eq(strlen(test4), s21_strlen(test4));
+char *test1 = "Hello world";
+char *test2 = "123456789\0";
+char *test3 = "    ";
+char *test4 = "";
+ck_assert_int_eq(strlen(test1), s21_strlen(test1));
+ck_assert_int_eq(strlen(test2), s21_strlen(test2));
+ck_assert_int_eq(strlen(test3), s21_strlen(test3));
+ck_assert_int_eq(strlen(test4), s21_strlen(test4));
+
+#test s21_strstr_test
+const char *haystack = "Hello, world!";
+const char *needle = "world";
+const char *expected =
+    strstr(haystack, needle);  // Оригинальная функция для сравнения
+char *result = s21_strstr(haystack, needle);
+
+// Проверяем, что результат не NULL, если ожидаемый тоже не NULL
+ck_assert_ptr_nonnull(result);
+ck_assert_ptr_nonnull(expected);
+
+// Проверяем, что возвращенные указатели указывают на один и тот же участок
+// памяти haystack
+ck_assert_ptr_eq(result, expected);
+
+// Проверяем, что строки, на которые указывают результат и ожидание, идентичны
+ck_assert_str_eq(result, expected);
+
+// Тест: подстрока не найдена
+#test test_s21_strstr_not_found
+const char *haystack = "Hello, world!";
+const char *needle = "universe";
+const char *expected = strstr(haystack, needle);  // Ожидаем NULL
+
+char *result = s21_strstr(haystack, needle);
+
+// Проверяем, что результат равен ожидаемому (NULL)
+ck_assert_ptr_null(result);
+ck_assert_ptr_null(expected);
+
+// Тест: пустая подстрока (needle)
+#test test_s21_strstr_empty_needle
+const char *haystack = "Hello, world!";
+const char *needle = "";  // Пустая строка
+// Стандарт strstr для пустой needle часто возвращает haystack.
+const char *expected = "Hello, world!";  // "Hello, world!"
+
+char *result = s21_strstr(haystack, needle);
+
+// Проверяем, что результат равен ожидаемому haystack
+ck_assert_str_eq(result, expected);
+
+// Тест: пустая строка (haystack)
+#test test_s21_strstr_empty_haystack
+const char *haystack = "";  // Пустая строка
+const char *needle = "test";
+// Стандарт strstr для пустой haystack часто возвращает NULL.
+const char *expected = NULL;  // Ожидаем NULL
+
+char *result = s21_strstr(haystack, needle);
+
+// Проверяем, что результат равен ожидаемому (NULL)
+ck_assert_ptr_null(result);
+ck_assert_ptr_null(expected);
+
+// Тест: needle равен haystack
+#test test_s21_strstr_needle_equal_haystack
+const char *haystack = "test";
+const char *needle = "test";
+const char *expected = strstr(haystack, needle);  // Ожидаем haystack
+
+char *result = s21_strstr(haystack, needle);
+
+// Проверяем, что результат не NULL
+ck_assert_ptr_nonnull(result);
+ck_assert_ptr_nonnull(expected);
+
+// Проверяем, что возвращенные указатели указывают на начало haystack
+ck_assert_ptr_eq(result, haystack);
+ck_assert_ptr_eq(expected, haystack);
+
+// Проверяем, что строки совпадают
+ck_assert_str_eq(result, expected);
+
+// Тест: needle в конце haystack
+#test test_s21_strstr_needle_at_end
+const char *haystack = "start middle end";
+const char *needle = "end";
+const char *expected = strstr(haystack, needle);  // Оригинальная функция
+
+char *result = s21_strstr(haystack, needle);
+
+// Проверяем, что результат не NULL
+ck_assert_ptr_nonnull(result);
+ck_assert_ptr_nonnull(expected);
+
+// Проверяем, что возвращенные указатели совпадают
+ck_assert_ptr_eq(result, expected);
+
+// Проверяем, что строки совпадают
+ck_assert_str_eq(result, expected);
+
+// Тест: needle несколько раз в haystack
+#test test_s21_strstr_multiple_occurrences
+const char *haystack = "abababab";
+const char *needle = "aba";
+const char *expected = strstr(
+    haystack, needle);  // Оригинальная функция (находит первое вхождение)
+
+char *result = s21_strstr(haystack, needle);
+
+// Проверяем, что результат не NULL
+ck_assert_ptr_nonnull(result);
+ck_assert_ptr_nonnull(expected);
+
+// Проверяем, что возвращенные указатели совпадают (находят первое вхождение)
+ck_assert_ptr_eq(result, expected);
+
+// Проверяем, что строки совпадают
+ck_assert_str_eq(result, expected);
+
+// Тест: Смешанные символы (включая пробелы, знаки препинания)
+#test test_s21_strstr_mixed_chars
+const char *haystack = "This is a test string, with punctuation! 123.";
+const char *needle = "string, with";
+const char *expected = strstr(haystack, needle);  // Оригинальная функция
+
+char *result = s21_strstr(haystack, needle);
+
+// Проверяем, что результат не NULL
+ck_assert_ptr_nonnull(result);
+ck_assert_ptr_nonnull(expected);
+
+// Проверяем, что возвращенные указатели совпадают
+ck_assert_ptr_eq(result, expected);
+
+// Проверяем, что строки совпадают
+ck_assert_str_eq(result, expected);
+
+// Тест: haystack короче needle
+#test test_s21_strstr_haystack_shorter
+const char *haystack = "short";
+const char *needle = "longer string";
+const char *expected = strstr(haystack, needle);  // Ожидаем NULL
+
+char *result = s21_strstr(haystack, needle);
+
+// Проверяем, что результат равен ожидаемому (NULL)
+ck_assert_ptr_null(result);
+ck_assert_ptr_null(expected);

@@ -6,3 +6,9 @@ t10d16/
 test.check
 .vscode/settings.json
 *.o
+report
+tests
+tests.c
+*.gcda
+*.gcno
+*.info

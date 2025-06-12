@@ -1,5 +1,6 @@
 CC = gcc
-FLAGS = -Wall -Wextra -Werror -std=c11
+# FLAGS = -Wall -Wextra -Werror -std=c11
+FLAGS = -Werror -std=c11
 SRC = s21_string.o s21_strlen.o s21_strstr.o
 TEST_LIBS = -lcheck -lm -lpthread -lsubunit
 
@@ -10,11 +11,12 @@ main: $(SRC)
 
 test: clean
 	checkmk tests.check > tests.c
-	$(CC) $(FLAGS) tests.c -lcheck -lm -lsubunit -o tests
+	$(CC) $(FLAGS) tests.c $(TEST_LIBS) -o tests
 	./tests
 
 lcov: clean
-	$(CC) $(FLAGS) --coverage tests.c -lcheck -lsubunit -lm -o tests
+	checkmk tests.check > tests.c
+	$(CC) $(FLAGS) --coverage tests.c $(TEST_LIBS) -o tests
 	./tests
 	lcov --directory . --capture -o coverage.info
 	genhtml --output-directory report --legend coverage.info

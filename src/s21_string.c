@@ -1,8 +1,8 @@
+#include "s21_string.h"
+
 #include <check.h>
 #include <stdlib.h>
 #include <string.h>
-
-#include "s21_string.h"
 
 // START_TEST(strlen1) {
 //   char *str = "Hello world";
@@ -10,7 +10,7 @@
 // }
 
 int s21_sprintf(char *str, const char *format, ...) {
-    // char allspec[] = "cdieEfgGosuxXpn%";
+  // char allspec[] = "cdieEfgGosuxXpn%";
   char *src = str;  // запомнить указатель на начало строки
 
   va_list arguments;
@@ -49,51 +49,15 @@ void print_numbers(int count, ...) {
 // остановился на 18:30
 
 int main() {
-  {
-    char *str = "some text here";
-    char *fnd = "text";
-    printf("Haystack: '%s' Needle: '%s' strstr: '%s'\n", str, fnd,
-           strstr(str, fnd));
-    printf("Haystack: '%s' Needle: '%s' s21str: '%s'\n\n", str, fnd,
-           s21_strstr(str, fnd));
-  }
+  const char *haystack = NULL;
+  const char *needle = "test";
+  // Стандарт strstr для пустой needle часто возвращает haystack.
+  // Наша реализация возвращает NULL.
+  const char *expected = NULL;  // Ожидаем NULL
 
-  {
-    char *str = "some text here";
-    char *fnd = "";
-    printf("Haystack: '%s' Needle: '%s' strstr: '%s'\n", str, fnd,
-           strstr(str, fnd));
-    printf("Haystack: '%s' Needle: '%s' s21str: '%s'\n\n", str, fnd,
-           s21_strstr(str, fnd));
-  }
+  printf("%s\n", strstr(haystack, needle));
+  // printf("%s\n", s21_strstr(haystack, needle));
 
-  {
-    char *str = "";
-    char *fnd = "text";
-    printf("Haystack: '%s' Needle: '%s' strstr: '%s'\n", str, fnd,
-           strstr(str, fnd));
-    printf("Haystack: '%s' Needle: '%s' s21str: '%s'\n\n", str, fnd,
-           s21_strstr(str, fnd));
-  }
-
-  {
-    char *str = "";
-    char *fnd = "";
-    printf("Haystack: '%s' Needle: '%s' strstr: '%s'\n", str, fnd,
-           strstr(str, fnd));
-    printf("Haystack: '%s' Needle: '%s' s21str: '%s'\n\n", str, fnd,
-           s21_strstr(str, fnd));
-  }
-
-  {
-    char *str = "some text here";
-    char *fnd = "12";
-
-    printf("Haystack: '%s' Needle: '%s' strstr: '%s'\n", str, fnd,
-           strstr(str, fnd));
-    printf("Haystack: '%s' Needle: '%s' s21str: '%s'\n\n", str, fnd,
-           s21_strstr(str, fnd));
-  }
   // printf("%ld\n", s21_strlen(str));
   // printf("%ld\n", s21_strlen(fnd));
   // printf("strstr: %s\n", strstr(str,fnd));
@@ -114,9 +78,9 @@ int main() {
   // printf("%+10d\n", d);
   // printf("%-10d\n", d);
   // printf("%- 10d\n", d);
-  // printf("%g\n", 12345.1234567);//0.1234 Округление до 0.00004 отсекает, выше
-  // плюсует предыдущий разряд 0.12345 > 0.1235 printf("%G\n", 12345.1234567);
-  // printf("%.0f\n", 1.12345);
+  // printf("%g\n", 12345.1234567);//0.1234 Округление до 0.00004 отсекает,
+  // выше плюсует предыдущий разряд 0.12345 > 0.1235 printf("%G\n",
+  // 12345.1234567); printf("%.0f\n", 1.12345);
 
   printf("\nEnd\n");
   return 0;
