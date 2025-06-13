@@ -46,16 +46,104 @@ void print_numbers(int count, ...) {
   printf("\n");
 }
 
-// остановился на 18:30
+char *s21_strtok(char *str, const char *delim) {
+  static int step = 1;
+  printf("%d: ---------------------- \n", step++);
+  printf("str: '%s'\n", str);
+
+  static char *memo;
+
+  if (str == NULL) {
+    str = memo;
+    printf("memo: |%s|\n", memo);
+  }
+
+  if (strlen(str) == 0) return NULL;
+
+  // удалить разделители в начале строки
+  int i = 0;
+
+  // char str[] = "! This is a test.";
+  // const char delim[] = " ,!.";
+
+  // while (str[i] != *delim)
+
+  // char *temp = str;
+  // for (const char *p = delim; *p != '\0'; p++) {
+  //   while (*p == *temp) {
+  //     temp++;
+  //   }
+  // }
+  // str = temp;
+  printf("clean delim: |%s|\n", str);
+
+  int len = 0;
+  for (char *p = str; *p != '\0'; p++) {
+    // взяли один чар из строки
+    const char *d = delim;
+    // проверяем его на все разделители по очереди
+    while (*d != '\0') {
+      // если чар равен разделителю
+      if (*p == *d) {
+        // ставим чару конец строки
+        *p = '\0';
+        // мемо запоминаем на позиции +1 от этого чара
+        memo = p + 1;
+        printf("save: |%s| len:%d\n", memo, len);
+        return str;
+      }
+      d++;
+    }
+    len++;
+  }
+
+  return str;
+}
 
 int main() {
-  const char *haystack = NULL;
-  const char *needle = "test";
-  // Стандарт strstr для пустой needle часто возвращает haystack.
-  // Наша реализация возвращает NULL.
-  const char *expected = NULL;  // Ожидаем NULL
+  printf("\n");
+  char str[] = "! This is a test.";
+  char delim[] = " ,!.";
 
-  printf("%s\n", strstr(haystack, needle));
+  char *temp = str;
+  int check = 1;
+  while (check && *temp != '\0') {
+    for (char *d = delim; *d != '\0'; d++) {
+      while (*temp == *d) {
+        temp++;
+      }
+    }
+    check = 0;
+  }
+  printf("%s", temp);
+
+  printf("\n");
+  return 0;
+
+  // char str[] = "Hello,  world!! This is a test.";
+  // const char delim[] = " ,!.";
+
+  // char *s21_token = s21_strtok(str, delim);
+  // int step = 1;
+  // while (s21_token != NULL) {
+  //   printf("Token: '%s'\n", s21_token);
+  //   s21_token = s21_strtok(NULL, delim);
+  //   step++;
+  //   if (step == 18) break;
+  // }
+
+  // printf("\n");
+
+  // char str2[] = "Hello,  world!!! This is a test.";
+  // char *token = strtok(str2, delim);
+
+  // while (token != NULL) {
+  //   printf("Token: '%s'\n", token);
+  //   token = strtok(
+  //       NULL, delim);  // Последующие вызовы с NULL для продолжения разбиения
+  // }
+
+  // printf("%s\n", strstr(haystack, needle));
   // printf("%s\n", s21_strstr(haystack, needle));
 
   // printf("%ld\n", s21_strlen(str));

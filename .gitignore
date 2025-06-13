@@ -12,3 +12,4 @@ tests.c
 *.gcda
 *.gcno
 *.info
+src/main
