@@ -1,7 +1,7 @@
 CC = gcc
 # FLAGS = -Wall -Wextra -Werror -std=c11
 FLAGS = -Werror -std=c11
-SRC = misc.o s21_string.o s21_strlen.o s21_strstr.o s21_trim.o
+SRC = misc.o s21_string.o s21_strlen.o s21_strstr.o s21_trim.o s21_strtok.o 
 TEST_LIBS = -lcheck -lm -lpthread -lsubunit
 
 all: clean main
@@ -40,6 +40,8 @@ s21_strstr.o: s21_strstr.c
 s21_trim.o: s21_trim.c
 	$(CC) $(FLAGS) -c s21_trim.c
 
+s21_strtok.o: s21_strtok.c
+	$(CC) $(FLAGS) -c s21_strtok.c
 
 # -I.: Указывает компилятору искать заголовочных файлов (файлов с расширением .h) в текущем каталоге (.). Это полезно, если ваши заголовочные файлы (s21_strstr.h) находятся в той же директории, что и исходные файлы .c.
 # -lcheck: Сообщает компилятору (точнее, линковщику, который вызывается после компиляции) связать с вашей программой библиотеку libcheck. Библиотека check используется для написания и запуска юнит-тестов. Компилятор сам добавит -lcheck к имени библиотеки (libcheck.so или libcheck.a в зависимости от типа библиотеки).

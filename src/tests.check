@@ -7,6 +7,7 @@
 #include "s21_string.h"
 #include "s21_strlen.c"
 #include "s21_strstr.c"
+#include "s21_strtok.c"
 #include "s21_trim.c"
 
 #test s21_strlen_test
@@ -19,11 +20,16 @@ ck_assert_int_eq(strlen(test2), s21_strlen(test2));
 ck_assert_int_eq(strlen(test3), s21_strlen(test3));
 ck_assert_int_eq(strlen(test4), s21_strlen(test4));
 
+// ##################################################################### //
+// ----------------------------- s21_strstr ---------------------------- //
+// ##################################################################### //
+
+// Тест 1: Строка найдена
 #test s21_strstr_test
 const char *haystack = "Hello, world!";
 const char *needle = "world";
-const char *expected =
-    strstr(haystack, needle);  // Оригинальная функция для сравнения
+// Оригинальная функция для сравнения
+const char *expected = strstr(haystack, needle);
 char *result = s21_strstr(haystack, needle);
 
 // Проверяем, что результат не NULL, если ожидаемый тоже не NULL
@@ -37,7 +43,7 @@ ck_assert_ptr_eq(result, expected);
 // Проверяем, что строки, на которые указывают результат и ожидание, идентичны
 ck_assert_str_eq(result, expected);
 
-// Тест: подстрока не найдена
+// Тест 2: подстрока не найдена
 #test test_s21_strstr_not_found
 const char *haystack = "Hello, world!";
 const char *needle = "universe";
@@ -49,7 +55,7 @@ char *result = s21_strstr(haystack, needle);
 ck_assert_ptr_null(result);
 ck_assert_ptr_null(expected);
 
-// Тест: пустая подстрока (needle)
+// Тест 3: пустая подстрока (needle)
 #test test_s21_strstr_empty_needle
 const char *haystack = "Hello, world!";
 const char *needle = "";  // Пустая строка
@@ -61,7 +67,7 @@ char *result = s21_strstr(haystack, needle);
 // Проверяем, что результат равен ожидаемому haystack
 ck_assert_str_eq(result, expected);
 
-// Тест: пустая строка (haystack)
+// Тест 4: пустая строка (haystack)
 #test test_s21_strstr_empty_haystack
 const char *haystack = "";  // Пустая строка
 const char *needle = "test";
@@ -74,7 +80,7 @@ char *result = s21_strstr(haystack, needle);
 ck_assert_ptr_null(result);
 ck_assert_ptr_null(expected);
 
-// Тест: needle равен haystack
+// Тест 5: needle равен haystack
 #test test_s21_strstr_needle_equal_haystack
 const char *haystack = "test";
 const char *needle = "test";
@@ -93,7 +99,7 @@ ck_assert_ptr_eq(expected, haystack);
 // Проверяем, что строки совпадают
 ck_assert_str_eq(result, expected);
 
-// Тест: needle в конце haystack
+// Тест 6: needle в конце haystack
 #test test_s21_strstr_needle_at_end
 const char *haystack = "start middle end";
 const char *needle = "end";
@@ -111,7 +117,7 @@ ck_assert_ptr_eq(result, expected);
 // Проверяем, что строки совпадают
 ck_assert_str_eq(result, expected);
 
-// Тест: needle несколько раз в haystack
+// Тест 7: needle несколько раз в haystack
 #test test_s21_strstr_multiple_occurrences
 const char *haystack = "abababab";
 const char *needle = "aba";
@@ -130,7 +136,7 @@ ck_assert_ptr_eq(result, expected);
 // Проверяем, что строки совпадают
 ck_assert_str_eq(result, expected);
 
-// Тест: Смешанные символы (включая пробелы, знаки препинания)
+// Тест 8: Смешанные символы (включая пробелы, знаки препинания)
 #test test_s21_strstr_mixed_chars
 const char *haystack = "This is a test string, with punctuation! 123.";
 const char *needle = "string, with";
@@ -148,7 +154,7 @@ ck_assert_ptr_eq(result, expected);
 // Проверяем, что строки совпадают
 ck_assert_str_eq(result, expected);
 
-// Тест: haystack короче needle
+// Тест9: haystack короче needle
 #test test_s21_strstr_haystack_shorter
 const char *haystack = "short";
 const char *needle = "longer string";
@@ -160,7 +166,9 @@ char *result = s21_strstr(haystack, needle);
 ck_assert_ptr_null(result);
 ck_assert_ptr_null(expected);
 
+// ##################################################################### //
 // ------------------------- Test for s21_trim ------------------------- //
+// ##################################################################### //
 
 // Тест 1: Источник NULL
 #test test_test_trim_null_source
@@ -231,3 +239,21 @@ void *result = s21_trim("trim me", "");
 ck_assert_ptr_nonnull(result);
 ck_assert_str_eq(result, "trim me");  // Ожидаем исходную строку
 free(result);
+
+// ##################################################################### //
+// ----------------------------- s21_strtok ---------------------------- //
+// ##################################################################### //
+char *s21_strtok_result;
+char *strtok_result;
+
+char str_strtok1[] = "one/two/three(four)five";
+char str_strtok2[] = "one/two/three(four)five";
+char delim[] = "/()";
+
+s21_strtok_result = s21_strtok(str_strtok1, delim);
+strtok_result = strtok(str_strtok2, delim);
+while (s21_strtok_result != S21_NULL) {
+  ck_assert_str_eq(s21_strtok_result, strtok_result);
+  s21_strtok_result = s21_strtok(S21_NULL, delim);
+  strtok_result = strtok(S21_NULL, delim);
+}
