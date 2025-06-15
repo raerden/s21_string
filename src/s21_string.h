@@ -64,7 +64,4 @@ char *s21_strtok(char *str, const char *delim);
 
 void *s21_trim(const char *src, const char *trim_chars);
 
-// вспомогательные функции. Реализация в misc.c
-int is_char_in_set(const char ch, const char *set);
-
 #endif

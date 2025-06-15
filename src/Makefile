@@ -25,10 +25,10 @@ lcov: clean
 clean:
 	rm -fr report ./main ./tests tests.c *.o *.gcov *.gcda *.gcno coverage.info
 
-misc.o: misc.c
+misc.o: misc.h misc.c
 	$(CC) $(FLAGS) -c misc.c
 
-s21_string.o: s21_string.c
+s21_string.o: s21_string.h s21_string.c
 	$(CC) $(FLAGS) -c s21_string.c
 
 s21_strlen.o: s21_strlen.c

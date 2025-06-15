@@ -74,13 +74,13 @@ void *test(const char *src) {
 int main() {
   printf("\n");
   int step;
-  char str[] = ". Hello,  world! !! ,This is a test.! , .";
-  char str2[] = ". Hello,  world! !! ,This is a test.! , .";
+  char str1[] = "11111111122222333333";
+  char str2[] = "11111111122222333333";
 
-  char *delim = " .!";
+  char *delim = "123";
 
-  printf("s21_strtok: |%s|\n", str);
-  char *s21_token = s21_strtok(str, delim);
+  printf("s21_strtok: |%s|\n", str1);
+  char *s21_token = s21_strtok(str1, delim);
   step = 1;
   while (s21_token != NULL) {
     printf("Token %d: '%s'\n", step++, s21_token);

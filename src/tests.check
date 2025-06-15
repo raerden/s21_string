@@ -10,6 +10,9 @@
 #include "s21_strtok.c"
 #include "s21_trim.c"
 
+// ##################################################################### //
+// ----------------------------- s21_strlen ---------------------------- //
+// ##################################################################### //
 #test s21_strlen_test
 char *test1 = "Hello world";
 char *test2 = "123456789\0";
@@ -243,15 +246,119 @@ free(result);
 // ##################################################################### //
 // ----------------------------- s21_strtok ---------------------------- //
 // ##################################################################### //
-char *s21_strtok_result;
-char *strtok_result;
 
-char str_strtok1[] = "one/two/three(four)five";
-char str_strtok2[] = "one/two/three(four)five";
-char delim[] = "/()";
+// Тест 1. Пустой разделитель
+#test test_strtok_empty_delimiter
+char str_strtok1[] = "Hello, world! This is a test.";
+char str_strtok2[] = "Hello, world! This is a test.";
+char delim[] = "";
 
-s21_strtok_result = s21_strtok(str_strtok1, delim);
-strtok_result = strtok(str_strtok2, delim);
+char *s21_strtok_result = s21_strtok(str_strtok1, delim);
+char *strtok_result = strtok(str_strtok2, delim);
+while (s21_strtok_result != S21_NULL) {
+  ck_assert_str_eq(s21_strtok_result, strtok_result);
+  s21_strtok_result = s21_strtok(S21_NULL, delim);
+  strtok_result = strtok(S21_NULL, delim);
+}
+
+// Тест 2. Разделитель один пробел
+#test test_strtok_space_delimiter
+char str_strtok1[] = "Hello, world! This is a test.";
+char str_strtok2[] = "Hello, world! This is a test.";
+char delim[] = " ";
+
+char *s21_strtok_result = s21_strtok(str_strtok1, delim);
+char *strtok_result = strtok(str_strtok2, delim);
+while (s21_strtok_result != S21_NULL) {
+  ck_assert_str_eq(s21_strtok_result, strtok_result);
+  s21_strtok_result = s21_strtok(S21_NULL, delim);
+  strtok_result = strtok(S21_NULL, delim);
+}
+
+// Тест 3. Несколько разделителей
+#test test_strtok_multi_delimiter
+char str_strtok1[] = "Hello, world! This is a test.";
+char str_strtok2[] = "Hello, world! This is a test.";
+char delim[] = " ,!.";
+
+char *s21_strtok_result = s21_strtok(str_strtok1, delim);
+char *strtok_result = strtok(str_strtok2, delim);
+while (s21_strtok_result != S21_NULL) {
+  ck_assert_str_eq(s21_strtok_result, strtok_result);
+  s21_strtok_result = s21_strtok(S21_NULL, delim);
+  strtok_result = strtok(S21_NULL, delim);
+}
+
+// Тест 4. пустые строки и разделитель
+#test test_strtok_all_empty_string
+char str_strtok1[] = "";
+char str_strtok2[] = "";
+char delim[] = "";
+
+char *s21_strtok_result = s21_strtok(str_strtok1, delim);
+char *strtok_result = strtok(str_strtok2, delim);
+// ожидаем NULL
+ck_assert_ptr_null(s21_strtok_result);
+ck_assert_ptr_null(strtok_result);
+
+// Тест 5. Один символ и пустой разделитель
+#test test_strtok_one_symbol
+char str_strtok1[] = "1";
+char str_strtok2[] = "1";
+char delim[] = "";
+
+char *s21_strtok_result = s21_strtok(str_strtok1, delim);
+char *strtok_result = strtok(str_strtok2, delim);
+while (s21_strtok_result != S21_NULL) {
+  ck_assert_str_eq(s21_strtok_result, strtok_result);
+  s21_strtok_result = s21_strtok(S21_NULL, delim);
+  strtok_result = strtok(S21_NULL, delim);
+}
+
+// Тест 6. Один символ и такой же разделитель
+#test test_strtok_one_symbol_with_same_delimiter
+char str_strtok1[] = "1";
+char str_strtok2[] = "1";
+char delim[] = "1";
+
+char *s21_strtok_result = s21_strtok(str_strtok1, delim);
+char *strtok_result = strtok(str_strtok2, delim);
+// ожидаем NULL
+ck_assert_ptr_null(s21_strtok_result);
+ck_assert_ptr_null(strtok_result);
+
+// Тест 7. Длинные строки из одного символа и такой же разделитель
+#test test_strtok_one_symbols_with_same_delimiter
+char str_strtok1[] = "111111111111111111111111111111111";
+char str_strtok2[] = "111111111111111111111111111111111";
+char delim[] = "1";
+
+char *s21_strtok_result = s21_strtok(str_strtok1, delim);
+char *strtok_result = strtok(str_strtok2, delim);
+// ожидаем NULL
+ck_assert_ptr_null(s21_strtok_result);
+ck_assert_ptr_null(strtok_result);
+
+// Тест 8. Длинные строки из символов разделителя
+#test test_strtok_delimiters_delete_all_string
+char str_strtok1[] = "11111111122222333333";
+char str_strtok2[] = "11111111122222333333";
+char delim[] = "123";
+
+char *s21_strtok_result = s21_strtok(str_strtok1, delim);
+char *strtok_result = strtok(str_strtok2, delim);
+// ожидаем NULL
+ck_assert_ptr_null(s21_strtok_result);
+ck_assert_ptr_null(strtok_result);
+
+// Тест 9. Разделитель из спецсимволов
+#test test_strtok_delimiters_are_specsymbols
+char str_strtok1[] = "11111\r11112\n2222333\t333";
+char str_strtok2[] = "11111\r11112\n2222333\t333";
+char delim[] = "\t\n\r";
+
+char *s21_strtok_result = s21_strtok(str_strtok1, delim);
+char *strtok_result = strtok(str_strtok2, delim);
 while (s21_strtok_result != S21_NULL) {
   ck_assert_str_eq(s21_strtok_result, strtok_result);
   s21_strtok_result = s21_strtok(S21_NULL, delim);
