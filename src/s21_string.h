@@ -2,6 +2,7 @@
 #define S21_STRING_PLUS
 #include <stdarg.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 typedef unsigned long int s21_size_t;
 #define S21_NULL (void *)0
@@ -42,25 +43,28 @@ s21_string.a, gcov_report).
 В цели gcov_report должен формироваться отчёт gcov в виде html страницы. Для
 этого unit-тесты должны запускаться с флагами gcov.
 */
-
 size_t s21_strlen(const char *str);
 char *s21_strstr(const char *haystack, const char *needle);
-
-void *s21_memchr(const void *str, int c, s21_size_t n);
-int s21_memcmp(const void *str1, const void *str2, s21_size_t n);
-void *s21_memcpy(void *restrict dest, const void *restrict src, s21_size_t n);
-void *s21_memmove(void *dest, const void *src, s21_size_t n);
-void *s21_memset(void *str, int c, s21_size_t n);
-char *s21_strcat(char *dest, const char *src);
-char *s21_strncat(char *dest, const char *src, size_t n);
-int s21_strcmp(const char *str1, const char *str2);
-char *s21_strcpy(char *dest, const char *src);
-char *s21_strchr(const char *str, int c);
-size_t s21_strspn(const char *s, const char *accept);
-char *s21_strpbrk(const char *s, const char *accept);
 char *s21_strtok(char *str, const char *delim);
 
-int sprintf(char *str, const char *format, ...);
-int sscanf(const char *str, const char *format, ...);
+// void *s21_memchr(const void *str, int c, s21_size_t n);
+// int s21_memcmp(const void *str1, const void *str2, s21_size_t n);
+// void *s21_memcpy(void *restrict dest, const void *restrict src, s21_size_t
+// n); void *s21_memmove(void *dest, const void *src, s21_size_t n); void
+// *s21_memset(void *str, int c, s21_size_t n); char *s21_strcat(char *dest,
+// const char *src); char *s21_strncat(char *dest, const char *src, size_t n);
+// int s21_strcmp(const char *str1, const char *str2);
+// char *s21_strcpy(char *dest, const char *src);
+// char *s21_strchr(const char *str, int c);
+// size_t s21_strspn(const char *s, const char *accept);
+// char *s21_strpbrk(const char *s, const char *accept);
+
+// int sprintf(char *str, const char *format, ...);
+// int sscanf(const char *str, const char *format, ...);
+
+void *s21_trim(const char *src, const char *trim_chars);
+
+// вспомогательные функции. Реализация в misc.c
+int is_char_in_set(const char ch, const char *set);
 
 #endif

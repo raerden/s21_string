@@ -1,7 +1,7 @@
 CC = gcc
 # FLAGS = -Wall -Wextra -Werror -std=c11
 FLAGS = -Werror -std=c11
-SRC = s21_string.o s21_strlen.o s21_strstr.o
+SRC = misc.o s21_string.o s21_strlen.o s21_strstr.o s21_trim.o
 TEST_LIBS = -lcheck -lm -lpthread -lsubunit
 
 all: clean main
@@ -25,6 +25,9 @@ lcov: clean
 clean:
 	rm -fr report ./main ./tests tests.c *.o *.gcov *.gcda *.gcno coverage.info
 
+misc.o: misc.c
+	$(CC) $(FLAGS) -c misc.c
+
 s21_string.o: s21_string.c
 	$(CC) $(FLAGS) -c s21_string.c
 
@@ -33,6 +36,9 @@ s21_strlen.o: s21_strlen.c
 
 s21_strstr.o: s21_strstr.c
 	$(CC) $(FLAGS) -c s21_strstr.c
+
+s21_trim.o: s21_trim.c
+	$(CC) $(FLAGS) -c s21_trim.c
 
 
 # -I.: Указывает компилятору искать заголовочных файлов (файлов с расширением .h) в текущем каталоге (.). Это полезно, если ваши заголовочные файлы (s21_strstr.h) находятся в той же директории, что и исходные файлы .c.

@@ -3,9 +3,11 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "misc.c"
 #include "s21_string.h"
 #include "s21_strlen.c"
 #include "s21_strstr.c"
+#include "s21_trim.c"
 
 #test s21_strlen_test
 char *test1 = "Hello world";
@@ -157,3 +159,75 @@ char *result = s21_strstr(haystack, needle);
 // Проверяем, что результат равен ожидаемому (NULL)
 ck_assert_ptr_null(result);
 ck_assert_ptr_null(expected);
+
+// ------------------------- Test for s21_trim ------------------------- //
+
+// Тест 1: Источник NULL
+#test test_test_trim_null_source
+void *result = s21_trim(NULL, " \t");
+ck_assert_ptr_null(result);  // Ожидаем NULL в результате
+
+// Тест 2: Символы для удаления NULL (должен обрезать пробелы по умолчанию?)
+#test test_trim_null_chars
+void *result = s21_trim("  hello  ", NULL);
+if (result != NULL) {
+  ck_assert_str_eq(result, "hello");  // Ожидаем обрезку пробелов
+  free(result);
+}
+
+// Тест 3: Пустая строка источника
+#test test_trim_empty_source
+void *result = s21_trim("", "abc");
+ck_assert_ptr_nonnull(result);  // Должен вернуть указатель (возможно, на "")
+ck_assert_str_eq(result, "");   // Ожидаем пустую строку
+free(result);
+
+// Тест 4: Нет символов для удаления
+#test test_trim_no_trimmable_chars
+void *result = s21_trim("hello", "xyz");
+ck_assert_ptr_nonnull(result);
+ck_assert_str_eq(result, "hello");  // Строка не должна измениться
+free(result);
+
+// Тест 5: Удаление символов в начале в конце
+#test test_trim_leading_chars
+void *result = s21_trim("xxxHelloyyy", "xy");
+ck_assert_ptr_nonnull(result);
+ck_assert_str_eq(result, "Hello");  // Только начальные 'x' удалены
+free(result);
+
+// Тест 7: Удаление символов и в начале, и в конце
+#test test_trim_both_leading_and_trailing
+void *result = s21_trim("  hello  world  ", " ");
+ck_assert_ptr_nonnull(result);
+ck_assert_str_eq(result, "hello  world");  // Пробелы с обоих концов удалены
+free(result);
+
+// Тест 8: Удаление смешанных символов (пробелы, табы, запятые)
+#test test_trim_mixed_chars
+void *result = s21_trim(" ,\t, leading and trailing ,\t, ", " ,\t");
+ck_assert_ptr_nonnull(result);
+ck_assert_str_eq(result,
+                 "leading and trailing");  // Удаляет указанные символы с концов
+free(result);
+
+// Тест 9: Все символы строки являются символами для удаления
+#test test_trim_all_chars_trimmed
+void *result = s21_trim("###", "#");
+ck_assert_ptr_nonnull(result);
+ck_assert_str_eq(result, "");  // Должна остаться пустая строка
+free(result);
+
+// Тест 10: Строка не должна измениться (нет символов для удаления по краям)
+#test test_trim_no_change
+void *result = s21_trim("middle  part", "xyz");
+ck_assert_ptr_nonnull(result);
+ck_assert_str_eq(result, "middle  part");
+free(result);
+
+// Тест 11: Пустая строка в trim_chars (ничего не должно удаляться)
+#test test_trim_empty_trim_chars
+void *result = s21_trim("trim me", "");
+ck_assert_ptr_nonnull(result);
+ck_assert_str_eq(result, "trim me");  // Ожидаем исходную строку
+free(result);
