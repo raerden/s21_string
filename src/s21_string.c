@@ -72,15 +72,15 @@ void *test(const char *src) {
 }
 
 char *s21_strtok(char *str, const char *delim) {
-  static int step = 1;
-  printf("  %d: ---------------------- \n", step++);
-  printf("str  : |%s|\n", str);
+  // static int step = 1;
+  // printf("  %d: ---------------------- \n", step++);
+  // printf("str  : |%s|\n", str);
 
   static char *memo = "";
 
   if (str == S21_NULL) {
     str = memo;
-    printf("memo : |%s|\n", memo);
+    // printf("memo : |%s|\n", memo);
   }
 
   if (s21_strlen(str) == 0 || str == S21_NULL || memo == S21_NULL)
@@ -88,82 +88,49 @@ char *s21_strtok(char *str, const char *delim) {
 
   if (strlen(delim) == 0) delim = " \n\r\t\v\f";
 
-  // удалить разделители в начале строки
+  // Сместить указатель за разделители в начале строки
   while (is_char_in_set(*str, delim)) str++;
 
-  // // удалить разделители в конце строки
-  // int len = s21_strlen(str);
-  // for (int i = len - 1; i >= 0; i--) {
-  //   if (is_char_in_set(str[i], delim))
-  //     str[i] = '\0';
-  //   else
-  //     break;
-  //   // printf("(%c)", str[i]);
-  // }
-
-  int len = strlen(str);
-  printf("cldel: |%s|[%d]\n", str, len);
-
   char *p = str;
-  for (; *p != '\0' && len > 0; p++) {
+  for (; *p != '\0'; p++) {
     // взяли один чар из строки
     if (is_char_in_set(*p, delim)) {
-      // ставим конец строки вместо этого чара
+      // ставим вместо этого чара конец строки
       *p = '\0';
-      // мемо запоминаем на позиции +1 от этого чара
-      // memo = p + 1;
       break;
     }
   }
+  // запоминаем указатель следующий за разделителем
   memo = p + 1;
-
-  // int len = s21_strlen(str);
-  //  const char *d = delim;
-  //  // проверяем его на все разделители по очереди
-  //  while (*d != '\0') {
-  //    // если чар равен разделителю
-  //    if (*p == *d) {
-  //      // ставим чару конец строки
-  //      *p = '\0';
-  //      // мемо запоминаем на позиции +1 от этого чара
-  //      memo = p + 1;
-  //      // printf("save: |%s| len:%d\n", memo, len);
-  //      return str;
-  //    }
-  //    d++;
-  //  }
-  //  len++;
-  // }
-
-  return str;
+  // если длина строки > 0 возвращаем результат
+  return strlen(str) ? str : S21_NULL;
 }
 
 int main() {
   printf("\n");
 
-  // char str[] = ". Hello,  world! !! This is a test";
-  char str[] = ".Hello test..";
+  char str[] = ". Hello,  world! !! ,This is a test.! ,.";
+  // char str[] = "Hello test ..";
   char delim[] = " ,!.";
 
-  char *s21_token = s21_strtok(str, delim);
-  int step = 1;
-  while (s21_token != NULL) {
-    printf("Token: '%s'\n", s21_token);
-    s21_token = s21_strtok(NULL, delim);
-    step++;
-    if (step == 8) break;
-  }
+  // char *s21_token = s21_strtok(str, delim);
+  // int step = 1;
+  // while (s21_token != NULL) {
+  //   printf("Token: '%s'\n", s21_token);
+  //   s21_token = s21_strtok(NULL, delim);
+  //   step++;
+  //   if (step == 8) break;
+  // }
 
   printf("\n");
 
-  // char *token = strtok(str, delim);
+  char *token = strtok(str, delim);
 
-  // while (token != NULL) {
-  //   printf("Token: '%s'\n", token);
-  //   token = strtok(
-  //       NULL, delim);  // Последующие вызовы с NULL для продолжения
-  //       разбиения
-  // }
+  while (token != NULL) {
+    printf("Token: '%s'\n", token);
+    token = strtok(NULL, delim);  // Последующие вызовы с NULL для продолжения
+    // разбиения
+  }
 
   // printf("%s\n", strstr(haystack, needle));
   // printf("%s\n", s21_strstr(haystack, needle));
