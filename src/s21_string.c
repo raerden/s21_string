@@ -4,48 +4,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-// START_TEST(strlen1) {
-//   char *str = "Hello world";
-//   ck_assert_int_eq(strlen(str), s21_strlen(str));
-// }
-
-int s21_sprintf(char *str, const char *format, ...) {
-  // char allspec[] = "cdieEfgGosuxXpn%";
-  char *src = str;  // запомнить указатель на начало строки
-
-  va_list arguments;
-  va_start(arguments, format);
-
-  while (*format) {
-    if (*format == '%') {
-    } else {
-      *str = *format;
-      str++;
-    }
-
-    format++;
-  }
-
-  *str = '\0';
-  return str - src;
-}
-
-void print_numbers(int count, ...) {
-  va_list args;
-  va_start(args, count);  // Инициализация va_list
-
-  for (int i = 0; i < count; i++) {
-    int num = va_arg(args, int);  // Получение следующего аргумента типа int
-    printf("%d ", num);
-  }
-
-  printf("\n%d ", va_arg(args, int));  // вышли за предел переданных аргументов.
-                                       // Выведет мусор из памяти
-
-  va_end(args);  // Очистка va_list
-  printf("\n");
-}
-
 void *test(const char *src) {
   // создаю новую область памяти равной размеру переданной строки
   char *new_str = malloc((strlen(src) + 1) * sizeof(char));
@@ -71,39 +29,89 @@ void *test(const char *src) {
   return save_begin_pointer;
 }
 
+void print_numbers(int count, ...) {
+  va_list args;
+  va_start(args, count);  // Инициализация va_list
+
+  for (int i = 0; i < count; i++) {
+    int num = va_arg(args, int);  // Получение следующего аргумента типа int
+    printf("%d ", num);
+  }
+
+  printf("\n%d ", va_arg(args, int));  // вышли за предел переданных аргументов.
+                                       // Выведет мусор из памяти
+
+  va_end(args);  // Очистка va_list
+  printf("\n");
+}
+
+// отправляет форматированный вывод в строку, на которую указывает str.
+/*
+str − Это С-строка, которую функция обрабатывает в качестве источника для
+извлечения данных; format − это С-строка, содержащая один или несколько
+следующих элементов: пробельный символ, непробельный символ и спецификаторы
+формата. Спецификатор формата для печатающих функций следует прототипу:
+%[флаги][ширина][.точность][длина]спецификатор.
+*/
+
+// допишет к строке заданное число
+// позже добавить сюда опции форматирования (выравнивание, дорисовка нулей и тд)
+void int_to_str(char **str, int num) {
+  char symbols[] = "0123456789";
+  while (num > 0) {
+    **str = symbols[num % 10];
+    //  *str = '1';
+    num = num / 10;
+    (*str)++;
+  }
+}
+
+int s21_sprintf(char *str, const char *format, ...) {
+  char allspec[] = "cdieEfgGosuxXpn%";
+  char *save_str_pointer = str;  // запомнить указатель на начало строки
+
+  va_list arguments;
+  // указываем название аргумента, после которого пойдут вариативные аргументы
+  va_start(arguments, format);
+
+  while (*format) {
+    if (*format == '%') {
+      // начало определения спецификатора
+      // движемся по строке пока не найдем одиз из спецификаторов
+      while (*format != 'd' && *format != '\0') *format++;
+      // обнаружен спецификатор целого числа.
+      // Получаем его из вариативного аргумента как int
+
+      if (*format == 'd') {
+        int num = va_arg(arguments, int);
+        // printf("Found d-spec. Is = %d\n", num);
+        //  отпечатать int как строку в str
+        int_to_str(&str, num);
+      }
+
+    } else {
+      *str = *format;
+      str++;
+    }
+
+    format++;
+  }
+
+  va_end(arguments);  // Очистка va_list
+
+  *str = '\0';
+  return str - save_str_pointer;
+}
+
 int main() {
   printf("\n");
-  int step;
-  char str1[] = "11111111122222333333";
-  char str2[] = "11111111122222333333";
 
-  char *delim = "123";
+  char str[256];
+  char *format = "Hello %d world";
 
-  printf("s21_strtok: |%s|\n", str1);
-  char *s21_token = s21_strtok(str1, delim);
-  step = 1;
-  while (s21_token != NULL) {
-    printf("Token %d: '%s'\n", step++, s21_token);
-    s21_token = s21_strtok(NULL, delim);
-  }
+  s21_sprintf(str, format, 10);
 
-  printf("\nstrtok: |%s|\n", str2);
-  char *token = strtok(str2, delim);
-  step = 1;
-  while (token != NULL) {
-    printf("Token %d: '%s'\n", step++, token);
-    // Последующие вызовы с NULL для продолжения разбиения
-    token = strtok(NULL, delim);
-  }
-
-  // printf("%s\n", strstr(haystack, needle));
-  // printf("%s\n", s21_strstr(haystack, needle));
-
-  // printf("%ld\n", s21_strlen(str));
-  // printf("%ld\n", s21_strlen(fnd));
-  // printf("strstr: %s\n", strstr(str,fnd));
-  // printf("s21_strstr: %s\n", s21_strstr(str,fnd));
-  // printf("after: %s\n", str);
+  printf("%s\n", str);
 
   // char allspec[] = "cdieEfgGosuxXpn%";
   // printf("%ld", s21_strlen(allspec));
@@ -126,3 +134,17 @@ int main() {
   printf("\nEnd\n");
   return 0;
 }
+
+/*
+
+  // char haystack[] = "hello world";
+  // char needle[] = "wo";
+  // printf("%s\n", strstr(haystack, needle));
+  // printf("%s\n", s21_strstr(haystack, needle));
+
+  // printf("%ld\n", s21_strlen(str));
+  // printf("%ld\n", s21_strlen(fnd));
+  // printf("strstr: %s\n", strstr(str, fnd));
+  // printf("s21_strstr: %s\n", s21_strstr(str, fnd));
+  // printf("after: %s\n", str);
+*/

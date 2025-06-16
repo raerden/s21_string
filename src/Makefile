@@ -25,6 +25,9 @@ lcov: clean
 clean:
 	rm -fr report ./main ./tests tests.c *.o *.gcov *.gcda *.gcno coverage.info
 
+mem: all
+	valgrind --leak-check=full -s ./main
+
 misc.o: misc.h misc.c
 	$(CC) $(FLAGS) -c misc.c
 
