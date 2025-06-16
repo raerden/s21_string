@@ -58,10 +58,18 @@ str − Это С-строка, которую функция обрабатыв
 // позже добавить сюда опции форматирования (выравнивание, дорисовка нулей и тд)
 void int_to_str(char **str, int num) {
   char symbols[] = "0123456789";
+  // максимальное число unsigned long int = 18446744073709551615 - 20 символов.
+  char buffer[22] = {0};
+  char *ptr = buffer;
   while (num > 0) {
-    **str = symbols[num % 10];
-    //  *str = '1';
+    *ptr = symbols[num % 10];
     num = num / 10;
+    ptr++;
+  }
+  ptr = '\0';
+  int len = s21_strlen(buffer);
+  for (int i = len - 1; i >= 0; i--) {
+    **str = buffer[i];
     (*str)++;
   }
 }
@@ -84,7 +92,6 @@ int s21_sprintf(char *str, const char *format, ...) {
 
       if (*format == 'd') {
         int num = va_arg(arguments, int);
-        // printf("Found d-spec. Is = %d\n", num);
         //  отпечатать int как строку в str
         int_to_str(&str, num);
       }
@@ -109,7 +116,7 @@ int main() {
   char str[256];
   char *format = "Hello %d world";
 
-  s21_sprintf(str, format, 10);
+  s21_sprintf(str, format, 102567);
 
   printf("%s\n", str);
 
