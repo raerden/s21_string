@@ -5,37 +5,42 @@
 #include <string.h>
 
 // Проба функции с вариативными аргументами
-void print_numbers(int count, ...) {
+void print_numbers(int count, ...)
+{
   va_list args;
-  va_start(args, count);  // Инициализация va_list
+  va_start(args, count); // Инициализация va_list
 
-  for (int i = 0; i < count; i++) {
-    int num = va_arg(args, int);  // Получение следующего аргумента типа int
+  for (int i = 0; i < count; i++)
+  {
+    int num = va_arg(args, int); // Получение следующего аргумента типа int
     printf("%d ", num);
   }
 
-  printf("\n%d ", va_arg(args, int));  // вышли за предел переданных аргументов.
-                                       // Выведет мусор из памяти
+  printf("\n%d ", va_arg(args, int)); // вышли за предел переданных аргументов.
+                                      // Выведет мусор из памяти
 
-  va_end(args);  // Очистка va_list
+  va_end(args); // Очистка va_list
   printf("\n");
 }
 
 // допишет к строке заданное число
 // позже добавить сюда опции форматирования (выравнивание, дорисовка нулей и тд)
-void int_to_str(char **str, int num) {
+void int_to_str(char **str, int num)
+{
   char symbols[] = "0123456789";
   // максимальное число unsigned long int = 18446744073709551615 - 20 символов.
   char buffer[22] = {0};
   char *ptr = buffer;
-  while (num > 0) {
+  while (num > 0)
+  {
     *ptr = symbols[num % 10];
     num = num / 10;
     ptr++;
   }
   ptr = '\0';
   int len = s21_strlen(buffer);
-  for (int i = len - 1; i >= 0; i--) {
+  for (int i = len - 1; i >= 0; i--)
+  {
     **str = buffer[i];
     (*str)++;
   }
@@ -49,29 +54,35 @@ str − Это С-строка, которую функция обрабатыв
 формата. Спецификатор формата для печатающих функций следует прототипу:
 %[флаги][ширина][.точность][длина]спецификатор.
 */
-int s21_sprintf(char *str, const char *format, ...) {
+int s21_sprintf(char *str, const char *format, ...)
+{
   char allspec[] = "cdieEfgGosuxXpn%";
-  char *save_str_pointer = str;  // запомнить указатель на начало строки
+  char *save_str_pointer = str; // запомнить указатель на начало строки
 
   va_list arguments;
   // указываем название аргумента, после которого пойдут вариативные аргументы
   va_start(arguments, format);
 
-  while (*format) {
-    if (*format == '%') {
+  while (*format)
+  {
+    if (*format == '%')
+    {
       // начало определения спецификатора
       // движемся по строке пока не найдем одиз из спецификаторов
-      while (*format != 'd' && *format != '\0') *format++;
+      while (*format != 'd' && *format != '\0')
+        *format++;
       // обнаружен спецификатор целого числа.
       // Получаем его из вариативного аргумента как int
 
-      if (*format == 'd') {
+      if (*format == 'd')
+      {
         int num = va_arg(arguments, int);
         //  отпечатать int как строку в str
         int_to_str(&str, num);
       }
-
-    } else {
+    }
+    else
+    {
       *str = *format;
       str++;
     }
@@ -79,21 +90,50 @@ int s21_sprintf(char *str, const char *format, ...) {
     format++;
   }
 
-  va_end(arguments);  // Очистка va_list
+  va_end(arguments); // Очистка va_list
 
   *str = '\0';
   return str - save_str_pointer;
 }
 
-int main() {
+int main()
+{
   printf("\n");
+  // char str[] = "abcdef";
+  // char delim[] = "ded";
 
-  char str[256];
-  char *format = "Hello %d world";
+  // printf("str: |%s|\n", str);
+  // printf("chr: |%s|", strchr(str, *delim));
 
-  s21_sprintf(str, format, 102567);
+  char str[] = "Hello, world. This is a test!!";
+  char delim[] = "! ,.";
 
-  printf("%s\n", str);
+  int i = 0;
+  char *s21_buf = s21_strtok(str, delim);
+  while (s21_buf != NULL)
+  {
+    printf("token: %s\n", s21_buf);
+    s21_buf = s21_strtok(NULL, delim);
+    if (++i == 10)
+      break;
+  }
+
+  // printf("\n");
+  // char str1[] = "Hello, world. This is a test!!";
+  // char delim1[] = "! ,.";
+  // char *buf = strtok(str1, delim);
+  // while (buf != NULL)
+  // {
+  //   printf("token: %s\n", buf);
+  //   buf = strtok(NULL, delim);
+  // }
+
+  // char str[S21_BUFFER_MAX];
+  // char *format = "Hello %d world";
+
+  // s21_sprintf(str, format, 102567);
+
+  // printf("%s\n", str);
 
   // char allspec[] = "cdieEfgGosuxXpn%";
   // printf("%ld", s21_strlen(allspec));

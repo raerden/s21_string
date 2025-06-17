@@ -1,8 +1,8 @@
 CC = gcc
 # FLAGS = -Wall -Wextra -Werror -std=c11
 FLAGS = -Werror -std=c11
+TEST_FLAGS = -lcheck -lm -lpthread -lsubunit
 SRC = misc.o s21_string.o s21_strlen.o s21_strstr.o s21_trim.o s21_strtok.o 
-TEST_LIBS = -lcheck -lm -lpthread -lsubunit
 
 all: clean main
 
@@ -11,12 +11,12 @@ main: $(SRC)
 
 test: clean
 	checkmk tests.check > tests.c
-	$(CC) $(FLAGS) tests.c $(TEST_LIBS) -o tests
+	$(CC) $(FLAGS) tests.c $(TEST_FLAGS) -o tests
 	./tests
 
-lcov: clean
+gcov_report: clean
 	checkmk tests.check > tests.c
-	$(CC) $(FLAGS) --coverage tests.c $(TEST_LIBS) -o tests
+	$(CC) $(FLAGS) --coverage tests.c $(TEST_FLAGS) -o tests
 	./tests
 	lcov --directory . --capture -o coverage.info
 	genhtml --output-directory report --legend coverage.info
@@ -27,6 +27,14 @@ clean:
 
 mem: all
 	valgrind --leak-check=full -s ./main
+
+run: all
+	./main
+
+cpptest:
+	cppcheck --enable=all --suppress=missingIncludeSystem *.h
+	cppcheck --enable=all --suppress=missingIncludeSystem *.c
+
 
 misc.o: misc.h misc.c
 	$(CC) $(FLAGS) -c misc.c

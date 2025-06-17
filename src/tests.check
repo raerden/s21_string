@@ -15,13 +15,23 @@
 // ##################################################################### //
 #test s21_strlen_test
 char *test1 = "Hello world";
-char *test2 = "123456789\0";
+char *test2 = "12\r345\0a678\n9";
 char *test3 = "    ";
 char *test4 = "";
-ck_assert_int_eq(strlen(test1), s21_strlen(test1));
-ck_assert_int_eq(strlen(test2), s21_strlen(test2));
-ck_assert_int_eq(strlen(test3), s21_strlen(test3));
-ck_assert_int_eq(strlen(test4), s21_strlen(test4));
+ck_assert_uint_eq(strlen(test1), s21_strlen(test1));
+ck_assert_uint_eq(strlen(test2), s21_strlen(test2));
+ck_assert_uint_eq(strlen(test3), s21_strlen(test3));
+ck_assert_uint_eq(strlen(test4), s21_strlen(test4));
+
+#test s21_strlen_test2
+char str[] = "Hello, world!";
+ck_assert_int_eq(s21_strlen(str), strlen(str));
+
+#test s21_strlen_test3
+char str1[1000];
+memset(str1, 'a', 999);
+str1[999] = '\0';
+ck_assert_int_eq(s21_strlen(str1), strlen(str1));
 
 // ##################################################################### //
 // ----------------------------- s21_strstr ---------------------------- //
@@ -50,7 +60,7 @@ ck_assert_str_eq(result, expected);
 #test test_s21_strstr_not_found
 const char *haystack = "Hello, world!";
 const char *needle = "universe";
-const char *expected = strstr(haystack, needle);  // Ожидаем NULL
+const char *expected = strstr(haystack, needle); // Ожидаем NULL
 
 char *result = s21_strstr(haystack, needle);
 
@@ -61,9 +71,9 @@ ck_assert_ptr_null(expected);
 // Тест 3: пустая подстрока (needle)
 #test test_s21_strstr_empty_needle
 const char *haystack = "Hello, world!";
-const char *needle = "";  // Пустая строка
+const char *needle = ""; // Пустая строка
 // Стандарт strstr для пустой needle часто возвращает haystack.
-const char *expected = "Hello, world!";  // "Hello, world!"
+const char *expected = "Hello, world!"; // "Hello, world!"
 
 char *result = s21_strstr(haystack, needle);
 
@@ -72,10 +82,10 @@ ck_assert_str_eq(result, expected);
 
 // Тест 4: пустая строка (haystack)
 #test test_s21_strstr_empty_haystack
-const char *haystack = "";  // Пустая строка
+const char *haystack = ""; // Пустая строка
 const char *needle = "test";
 // Стандарт strstr для пустой haystack часто возвращает NULL.
-const char *expected = NULL;  // Ожидаем NULL
+const char *expected = NULL; // Ожидаем NULL
 
 char *result = s21_strstr(haystack, needle);
 
@@ -87,7 +97,7 @@ ck_assert_ptr_null(expected);
 #test test_s21_strstr_needle_equal_haystack
 const char *haystack = "test";
 const char *needle = "test";
-const char *expected = strstr(haystack, needle);  // Ожидаем haystack
+const char *expected = strstr(haystack, needle); // Ожидаем haystack
 
 char *result = s21_strstr(haystack, needle);
 
@@ -106,7 +116,7 @@ ck_assert_str_eq(result, expected);
 #test test_s21_strstr_needle_at_end
 const char *haystack = "start middle end";
 const char *needle = "end";
-const char *expected = strstr(haystack, needle);  // Оригинальная функция
+const char *expected = strstr(haystack, needle); // Оригинальная функция
 
 char *result = s21_strstr(haystack, needle);
 
@@ -125,7 +135,7 @@ ck_assert_str_eq(result, expected);
 const char *haystack = "abababab";
 const char *needle = "aba";
 const char *expected = strstr(
-    haystack, needle);  // Оригинальная функция (находит первое вхождение)
+    haystack, needle); // Оригинальная функция (находит первое вхождение)
 
 char *result = s21_strstr(haystack, needle);
 
@@ -143,7 +153,7 @@ ck_assert_str_eq(result, expected);
 #test test_s21_strstr_mixed_chars
 const char *haystack = "This is a test string, with punctuation! 123.";
 const char *needle = "string, with";
-const char *expected = strstr(haystack, needle);  // Оригинальная функция
+const char *expected = strstr(haystack, needle); // Оригинальная функция
 
 char *result = s21_strstr(haystack, needle);
 
@@ -161,7 +171,7 @@ ck_assert_str_eq(result, expected);
 #test test_s21_strstr_haystack_shorter
 const char *haystack = "short";
 const char *needle = "longer string";
-const char *expected = strstr(haystack, needle);  // Ожидаем NULL
+const char *expected = strstr(haystack, needle); // Ожидаем NULL
 
 char *result = s21_strstr(haystack, needle);
 
@@ -176,42 +186,43 @@ ck_assert_ptr_null(expected);
 // Тест 1: Источник NULL
 #test test_test_trim_null_source
 void *result = s21_trim(NULL, " \t");
-ck_assert_ptr_null(result);  // Ожидаем NULL в результате
+ck_assert_ptr_null(result); // Ожидаем NULL в результате
 
 // Тест 2: Символы для удаления NULL (должен обрезать пробелы по умолчанию?)
 #test test_trim_null_chars
 void *result = s21_trim("  hello  ", NULL);
-if (result != NULL) {
-  ck_assert_str_eq(result, "hello");  // Ожидаем обрезку пробелов
+if (result != NULL)
+{
+  ck_assert_str_eq(result, "hello"); // Ожидаем обрезку пробелов
   free(result);
 }
 
 // Тест 3: Пустая строка источника
 #test test_trim_empty_source
 void *result = s21_trim("", "abc");
-ck_assert_ptr_nonnull(result);  // Должен вернуть указатель (возможно, на "")
-ck_assert_str_eq(result, "");   // Ожидаем пустую строку
+ck_assert_ptr_nonnull(result); // Должен вернуть указатель (возможно, на "")
+ck_assert_str_eq(result, "");  // Ожидаем пустую строку
 free(result);
 
 // Тест 4: Нет символов для удаления
 #test test_trim_no_trimmable_chars
 void *result = s21_trim("hello", "xyz");
 ck_assert_ptr_nonnull(result);
-ck_assert_str_eq(result, "hello");  // Строка не должна измениться
+ck_assert_str_eq(result, "hello"); // Строка не должна измениться
 free(result);
 
 // Тест 5: Удаление символов в начале в конце
 #test test_trim_leading_chars
 void *result = s21_trim("xxxHelloyyy", "xy");
 ck_assert_ptr_nonnull(result);
-ck_assert_str_eq(result, "Hello");  // Только начальные 'x' удалены
+ck_assert_str_eq(result, "Hello"); // Только начальные 'x' удалены
 free(result);
 
 // Тест 7: Удаление символов и в начале, и в конце
 #test test_trim_both_leading_and_trailing
 void *result = s21_trim("  hello  world  ", " ");
 ck_assert_ptr_nonnull(result);
-ck_assert_str_eq(result, "hello  world");  // Пробелы с обоих концов удалены
+ck_assert_str_eq(result, "hello  world"); // Пробелы с обоих концов удалены
 free(result);
 
 // Тест 8: Удаление смешанных символов (пробелы, табы, запятые)
@@ -219,14 +230,14 @@ free(result);
 void *result = s21_trim(" ,\t, leading and trailing ,\t, ", " ,\t");
 ck_assert_ptr_nonnull(result);
 ck_assert_str_eq(result,
-                 "leading and trailing");  // Удаляет указанные символы с концов
+                 "leading and trailing"); // Удаляет указанные символы с концов
 free(result);
 
 // Тест 9: Все символы строки являются символами для удаления
 #test test_trim_all_chars_trimmed
 void *result = s21_trim("###", "#");
 ck_assert_ptr_nonnull(result);
-ck_assert_str_eq(result, "");  // Должна остаться пустая строка
+ck_assert_str_eq(result, ""); // Должна остаться пустая строка
 free(result);
 
 // Тест 10: Строка не должна измениться (нет символов для удаления по краям)
@@ -240,28 +251,14 @@ free(result);
 #test test_trim_empty_trim_chars
 void *result = s21_trim("trim me", "");
 ck_assert_ptr_nonnull(result);
-ck_assert_str_eq(result, "trim me");  // Ожидаем исходную строку
+ck_assert_str_eq(result, "trim me"); // Ожидаем исходную строку
 free(result);
 
 // ##################################################################### //
 // ----------------------------- s21_strtok ---------------------------- //
 // ##################################################################### //
 
-// Тест 1. Пустой разделитель
-#test test_strtok_empty_delimiter
-char str_strtok1[] = "Hello, world! This is a test.";
-char str_strtok2[] = "Hello, world! This is a test.";
-char delim[] = "";
-
-char *s21_strtok_result = s21_strtok(str_strtok1, delim);
-char *strtok_result = strtok(str_strtok2, delim);
-while (s21_strtok_result != S21_NULL) {
-  ck_assert_str_eq(s21_strtok_result, strtok_result);
-  s21_strtok_result = s21_strtok(S21_NULL, delim);
-  strtok_result = strtok(S21_NULL, delim);
-}
-
-// Тест 2. Разделитель один пробел
+// Тест 1. Разделитель один пробел
 #test test_strtok_space_delimiter
 char str_strtok1[] = "Hello, world! This is a test.";
 char str_strtok2[] = "Hello, world! This is a test.";
@@ -269,11 +266,22 @@ char delim[] = " ";
 
 char *s21_strtok_result = s21_strtok(str_strtok1, delim);
 char *strtok_result = strtok(str_strtok2, delim);
-while (s21_strtok_result != S21_NULL) {
+while (s21_strtok_result != S21_NULL)
+{
   ck_assert_str_eq(s21_strtok_result, strtok_result);
   s21_strtok_result = s21_strtok(S21_NULL, delim);
   strtok_result = strtok(S21_NULL, delim);
 }
+
+// Тест 2. Пустой разделитель
+#test test_strtok_empty_delimiter
+char str_strtok1[] = "Hello, world! This is a test.";
+char str_strtok2[] = "Hello, world! This is a test.";
+char delim[] = "";
+
+char *s21_strtok_result = s21_strtok(str_strtok1, delim);
+char *strtok_result = strtok(str_strtok2, delim);
+ck_assert_str_eq(s21_strtok_result, strtok_result);
 
 // Тест 3. Несколько разделителей
 #test test_strtok_multi_delimiter
@@ -283,7 +291,8 @@ char delim[] = " ,!.";
 
 char *s21_strtok_result = s21_strtok(str_strtok1, delim);
 char *strtok_result = strtok(str_strtok2, delim);
-while (s21_strtok_result != S21_NULL) {
+while (s21_strtok_result != S21_NULL)
+{
   ck_assert_str_eq(s21_strtok_result, strtok_result);
   s21_strtok_result = s21_strtok(S21_NULL, delim);
   strtok_result = strtok(S21_NULL, delim);
@@ -309,7 +318,8 @@ char delim[] = "";
 
 char *s21_strtok_result = s21_strtok(str_strtok1, delim);
 char *strtok_result = strtok(str_strtok2, delim);
-while (s21_strtok_result != S21_NULL) {
+while (s21_strtok_result != S21_NULL)
+{
   ck_assert_str_eq(s21_strtok_result, strtok_result);
   s21_strtok_result = s21_strtok(S21_NULL, delim);
   strtok_result = strtok(S21_NULL, delim);
@@ -359,7 +369,8 @@ char delim[] = "\t\n\r";
 
 char *s21_strtok_result = s21_strtok(str_strtok1, delim);
 char *strtok_result = strtok(str_strtok2, delim);
-while (s21_strtok_result != S21_NULL) {
+while (s21_strtok_result != S21_NULL)
+{
   ck_assert_str_eq(s21_strtok_result, strtok_result);
   s21_strtok_result = s21_strtok(S21_NULL, delim);
   strtok_result = strtok(S21_NULL, delim);
