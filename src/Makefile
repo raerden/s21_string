@@ -1,65 +1,66 @@
 CC = gcc
-# FLAGS = -Wall -Wextra -Werror -std=c11
-FLAGS = -Werror -std=c11
-TEST_FLAGS = -lcheck -lm -lpthread -lsubunit
-SRC = misc.o s21_string.o s21_strlen.o s21_strstr.o s21_trim.o s21_strtok.o 
+CFLAGS = -Wall -Wextra -Werror
+GCOV_FLAGS = -fprofile-arcs -ftest-coverage
+UNAME := $(shell uname -s)
+LDFLAGS = -lcheck -lm -lpthread
+MEMTEST_EXEC = leaks -atExit --
+ifeq ($(UNAME), Linux)
+    LDFLAGS += -lsubunit
+	MEMTEST_EXEC = valgrind
+endif
 
-all: clean main
+SRC = $(wildcard string_func/*.c) $(wildcard c_sharp/*.c) $(wildcard sprintf/*.c) s21_common.c
 
-main: $(SRC)
-	$(CC) $(FLAGS) $(SRC) -o main
+OBJ_DIR = obj
+OBJ = $(patsubst %.c, $(OBJ_DIR)/%.o, $(SRC))
+TEST_SRC = test_s21_string.c
+TEST_EXEC = test_s21_string
+GCOV_DIR = gcov_report
 
-test: clean
-	checkmk tests.check > tests.c
-	$(CC) $(FLAGS) tests.c $(TEST_FLAGS) -o tests
-	./tests
+all: clean s21_string.a
 
-gcov_report: clean
-	checkmk tests.check > tests.c
-	$(CC) $(FLAGS) --coverage tests.c $(TEST_FLAGS) -o tests
-	./tests
-	lcov --directory . --capture -o coverage.info
-	genhtml --output-directory report --legend coverage.info
-	open report/index.html
+s21_string.a: $(OBJ)
+	ar rcs $@ $^
+	ranlib $@
+
+$(TEST_SRC):
+	checkmk tests.check > $@
+
+$(TEST_EXEC): $(TEST_SRC) s21_string.a
+	$(CC) $(CFLAGS) $< -o $@ s21_string.a $(LDFLAGS)
+
+$(OBJ_DIR)/%.o: %.c
+	@mkdir -p $(@D)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+test: all $(TEST_EXEC)
+	./$(TEST_EXEC)
+
+gcov_report: CFLAGS += $(GCOV_FLAGS)
+gcov_report: clean $(TEST_SRC)
+	mkdir -p $(GCOV_DIR)
+	$(CC) $(CFLAGS) $(GCOV_FLAGS) $(TEST_SRC) $(SRC) -o $(GCOV_DIR)/$(TEST_EXEC) $(LDFLAGS)
+	./$(GCOV_DIR)/$(TEST_EXEC)
+	lcov -t "$(TEST_EXEC)" -o $(GCOV_DIR)/coverage.info -c -d . --exclude "*/tests.check"
+	genhtml -o $(GCOV_DIR)/report $(GCOV_DIR)/coverage.info
+	@echo "=============================================="
+	@echo "Отчёт покрытия успешно сгенерирован!"
+	@echo "Откройте в браузере:"
+	@echo "file://$(CURDIR)/$(GCOV_DIR)/report/index.html"
+	@echo "=============================================="
 
 clean:
-	rm -fr report ./main ./tests tests.c *.o *.gcov *.gcda *.gcno coverage.info
-
-mem: all
-	valgrind --leak-check=full -s ./main
-
-run: all
-	./main
+	rm -rf $(OBJ_DIR) $(TEST_EXEC) $(GCOV_DIR) s21_string.a test_s21_string.c
 
 cpptest:
 	cppcheck --enable=all --suppress=missingIncludeSystem *.h
-	cppcheck --enable=all --suppress=missingIncludeSystem *.c
+	cppcheck --enable=all --suppress=missingIncludeSystem *.c c_sharp/*.c sprintf/*.c string_func/*.c
 
+clang:
+	cp ../materials/linters/.clang-format .
+	clang-format -i *.h *.c c_sharp/*.c sprintf/*.c string_func/*.c
 
-misc.o: misc.h misc.c
-	$(CC) $(FLAGS) -c misc.c
-
-s21_string.o: s21_string.h s21_string.c
-	$(CC) $(FLAGS) -c s21_string.c
-
-s21_strlen.o: s21_strlen.c
-	$(CC) $(FLAGS) -c s21_strlen.c
-
-s21_strstr.o: s21_strstr.c
-	$(CC) $(FLAGS) -c s21_strstr.c
-
-s21_trim.o: s21_trim.c
-	$(CC) $(FLAGS) -c s21_trim.c
-
-s21_strtok.o: s21_strtok.c
-	$(CC) $(FLAGS) -c s21_strtok.c
-
-# -I.: Указывает компилятору искать заголовочных файлов (файлов с расширением .h) в текущем каталоге (.). Это полезно, если ваши заголовочные файлы (s21_strstr.h) находятся в той же директории, что и исходные файлы .c.
-# -lcheck: Сообщает компилятору (точнее, линковщику, который вызывается после компиляции) связать с вашей программой библиотеку libcheck. Библиотека check используется для написания и запуска юнит-тестов. Компилятор сам добавит -lcheck к имени библиотеки (libcheck.so или libcheck.a в зависимости от типа библиотеки).
-# -lm: Сообщает линковщику связать с библиотекой libm (Math Library). Она содержит математические функции. Хотя для тестирования строк это не обязательно, иногда check или другие библиотеки могут использовать функции из libm.
-# -lpthread: Сообщает линковщику связать с библиотекой libpthread (POSIX Threads). Библиотека check может использовать потоки для управления тестов, поэтому она может быть нужна. (Хотя -lcheck обычно включает -lpthread, явное указание не повредит).
-# -lsubunit: Сообщает линковщику связать с библиотекой libsubunit. Это формат для передачи результатов тестов. Библиотека check имеет поддержку вывода результатов в формате Subunit. Этот флаг, скорее всего, является причиной ошибки, которую вы видите. Если библиотека check, которую вы установили, не была собрана с поддержкой Subunit, линковщик не сможет найти функции subunit_test_start, subunit_test_pass и т.д., и выдаст ошибку undefined reference. (Решение - см. предыдущий ответ).
-# -o tests: Задает имя выходного исполняемого файла, который будет создан в результате компиляции и линковки. В данном случае это будет файл tests.
-# Итог:
-
-# Команда компилирует три исходных файла C (s21_strstr.c, s21_strlen.c, tests.c), использует стандарт C11, включает строгие предупреждений и преобразует их в ошибки. Она ищет заголовочные файлы в текущем каталоге и связывает полученную программу с библиотеками check, m, pthread и subunit, создавая исполняемый файл tests. Проблема, скорее всего, связана с флагом -lsubunit и версией/конфигурацией библиотеки check.
+memtest: all
+	$(CC) $(CFLAGS) memtest.c s21_string.a -o memtest
+	$(MEMTEST_EXEC) ./memtest
+	rm -rf $(OBJ_DIR) s21_string.a memtest

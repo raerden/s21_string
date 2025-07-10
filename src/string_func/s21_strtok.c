@@ -1,29 +1,23 @@
-#include "misc.h"
-#include "s21_string.h"
+#include "../s21_string.h"
 
-char *s21_strtok(char *str, const char *delim)
-{
+char *s21_strtok(char *str, const char *delim) {
   static char *memo = "";
 
-  if (str == S21_NULL)
-    str = memo;
+  if (str == S21_NULL) str = memo;
 
   // Удалить разделители в начале строки
-  char *check = strchr(delim, *str);
-  while (check != NULL && check[0] != '\0')
-  {
+  const char *check = s21_strchr(delim, *str);
+  while (check != NULL && check[0] != '\0') {
     str++;
-    check = strchr(delim, *str);
+    check = s21_strchr(delim, *str);
   }
 
   char *result = str;
 
-  for (; *str != '\0'; str++)
-  {
+  for (; *str != '\0'; str++) {
     // проверяем строку по одному символу
-    check = strchr(delim, *str);
-    if (check != S21_NULL && check[0] != '\0')
-    {
+    check = s21_strchr(delim, *str);
+    if (check != S21_NULL && check[0] != '\0') {
       // если символ присутствует в строке разделитля то
       // ставим вместо этого чара конец строки
       *str = '\0';

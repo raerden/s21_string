@@ -1,30 +1,22 @@
-#include <check.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#include "misc.c"
 #include "s21_string.h"
-#include "s21_strlen.c"
-#include "s21_strstr.c"
-#include "s21_strtok.c"
-#include "s21_trim.c"
+#include <stdio.h>
+#include <string.h>
 
 // ##################################################################### //
 // ----------------------------- s21_strlen ---------------------------- //
 // ##################################################################### //
 #test s21_strlen_test
-char *test1 = "Hello world";
-char *test2 = "12\r345\0a678\n9";
-char *test3 = "    ";
-char *test4 = "";
+const char *test1 = "Hello world";
+const char *test2 = "12\r345\0a678\n9";
+const char *test3 = "    ";
+const char *test4 = "";
 ck_assert_uint_eq(strlen(test1), s21_strlen(test1));
 ck_assert_uint_eq(strlen(test2), s21_strlen(test2));
 ck_assert_uint_eq(strlen(test3), s21_strlen(test3));
 ck_assert_uint_eq(strlen(test4), s21_strlen(test4));
 
 #test s21_strlen_test2
-char str[] = "Hello, world!";
+const char str[] = "Hello, world!";
 ck_assert_int_eq(s21_strlen(str), strlen(str));
 
 #test s21_strlen_test3
@@ -262,7 +254,7 @@ free(result);
 #test test_strtok_space_delimiter
 char str_strtok1[] = "Hello, world! This is a test.";
 char str_strtok2[] = "Hello, world! This is a test.";
-char delim[] = " ";
+const char delim[] = " ";
 
 char *s21_strtok_result = s21_strtok(str_strtok1, delim);
 char *strtok_result = strtok(str_strtok2, delim);
@@ -277,7 +269,7 @@ while (s21_strtok_result != S21_NULL)
 #test test_strtok_empty_delimiter
 char str_strtok1[] = "Hello, world! This is a test.";
 char str_strtok2[] = "Hello, world! This is a test.";
-char delim[] = "";
+const char delim[] = "";
 
 char *s21_strtok_result = s21_strtok(str_strtok1, delim);
 char *strtok_result = strtok(str_strtok2, delim);
@@ -287,7 +279,7 @@ ck_assert_str_eq(s21_strtok_result, strtok_result);
 #test test_strtok_multi_delimiter
 char str_strtok1[] = "Hello, world! This is a test.";
 char str_strtok2[] = "Hello, world! This is a test.";
-char delim[] = " ,!.";
+const char delim[] = " ,!.";
 
 char *s21_strtok_result = s21_strtok(str_strtok1, delim);
 char *strtok_result = strtok(str_strtok2, delim);
@@ -302,7 +294,7 @@ while (s21_strtok_result != S21_NULL)
 #test test_strtok_all_empty_string
 char str_strtok1[] = "";
 char str_strtok2[] = "";
-char delim[] = "";
+const char delim[] = "";
 
 char *s21_strtok_result = s21_strtok(str_strtok1, delim);
 char *strtok_result = strtok(str_strtok2, delim);
@@ -314,7 +306,7 @@ ck_assert_ptr_null(strtok_result);
 #test test_strtok_one_symbol
 char str_strtok1[] = "1";
 char str_strtok2[] = "1";
-char delim[] = "";
+const char delim[] = "";
 
 char *s21_strtok_result = s21_strtok(str_strtok1, delim);
 char *strtok_result = strtok(str_strtok2, delim);
@@ -329,7 +321,7 @@ while (s21_strtok_result != S21_NULL)
 #test test_strtok_one_symbol_with_same_delimiter
 char str_strtok1[] = "1";
 char str_strtok2[] = "1";
-char delim[] = "1";
+const char delim[] = "1";
 
 char *s21_strtok_result = s21_strtok(str_strtok1, delim);
 char *strtok_result = strtok(str_strtok2, delim);
@@ -341,7 +333,7 @@ ck_assert_ptr_null(strtok_result);
 #test test_strtok_one_symbols_with_same_delimiter
 char str_strtok1[] = "111111111111111111111111111111111";
 char str_strtok2[] = "111111111111111111111111111111111";
-char delim[] = "1";
+const char delim[] = "1";
 
 char *s21_strtok_result = s21_strtok(str_strtok1, delim);
 char *strtok_result = strtok(str_strtok2, delim);
@@ -353,7 +345,7 @@ ck_assert_ptr_null(strtok_result);
 #test test_strtok_delimiters_delete_all_string
 char str_strtok1[] = "11111111122222333333";
 char str_strtok2[] = "11111111122222333333";
-char delim[] = "123";
+const char delim[] = "123";
 
 char *s21_strtok_result = s21_strtok(str_strtok1, delim);
 char *strtok_result = strtok(str_strtok2, delim);
@@ -365,7 +357,7 @@ ck_assert_ptr_null(strtok_result);
 #test test_strtok_delimiters_are_specsymbols
 char str_strtok1[] = "11111\r11112\n2222333\t333";
 char str_strtok2[] = "11111\r11112\n2222333\t333";
-char delim[] = "\t\n\r";
+const char delim[] = "\t\n\r";
 
 char *s21_strtok_result = s21_strtok(str_strtok1, delim);
 char *strtok_result = strtok(str_strtok2, delim);
@@ -375,3 +367,2708 @@ while (s21_strtok_result != S21_NULL)
   s21_strtok_result = s21_strtok(S21_NULL, delim);
   strtok_result = strtok(S21_NULL, delim);
 }
+
+// ##################################################################### //
+// ---------------------------- s21_strncat ---------------------------- //
+// ##################################################################### //
+
+// Простая конкатенация
+#test strncat_test_simple_concat
+    char strncat1[50] = "Hello, ";
+    char strncat2[50] = "Hello, ";
+    const char *strncat_src1 = "world!";
+    ck_assert_str_eq(strncat(strncat1, strncat_src1, 6), s21_strncat(strncat2, strncat_src1, 6));
+
+// n меньше длины источника
+#test strncat_test_n_less_src
+    char strncat3[50] = "Start: ";
+    char strncat4[50] = "Start: ";
+    const char *strncat_src2 = "123456789";
+    ck_assert_str_eq(strncat(strncat3, strncat_src2, 4), s21_strncat(strncat4, strncat_src2, 4));
+
+// n больше длины источника
+#test strncat_test_n_more_src
+    char strncat5[50] = "Data: ";
+    char strncat6[50] = "Data: ";
+    const char *strncat_src3 = "short";
+    ck_assert_str_eq(strncat(strncat5, strncat_src3, 10), s21_strncat(strncat6, strncat_src3, 10));
+
+// пустой источник
+#test strncat_test_empty_src
+    char strncat7[50] = "Only dest";
+    char strncat8[50] = "Only dest";
+    const char *strncat_src4 = "";
+    ck_assert_str_eq(strncat(strncat7, strncat_src4, 10), s21_strncat(strncat8, strncat_src4, 10));
+
+// пустая начальная строка
+#test strncat_test_empty_dest
+    char strncat9[50] = "";
+    char strncat10[50] = "";
+    const char *strncat_src5 = "Fill this";
+    ck_assert_str_eq(strncat(strncat9, strncat_src5, 10), s21_strncat(strncat10, strncat_src5, 10));
+
+// нулевое кол-во символов
+#test strncat_test_zero_n
+    char strncat11[50] = "Zero ";
+    char strncat12[50] = "Zero ";
+    const char *strncat_src6 = "should not append";
+    ck_assert_str_eq(strncat(strncat11, strncat_src6, 0), s21_strncat(strncat12, strncat_src6, 0));
+
+// спец-символы в источнике
+#test strncat_special_characters
+    char strncat13[50] = "Spec:";
+    char strncat14[50] = "Spec:";
+    const char *strncat_src7 = "\n\t\r!@#";
+    ck_assert_str_eq(strncat(strncat13, strncat_src7, 5), s21_strncat(strncat14, strncat_src7, 5));
+
+// ещё один тест с учесением прибавляемой строки
+#test strncat_test_truncate_long_src
+    char strncat15[100] = "Begin: ";
+    char strncat16[100] = "Begin: ";
+    const char *strncat_src8 = "This is a long string to be truncated";
+    ck_assert_str_eq(strncat(strncat15, strncat_src8, 11), s21_strncat(strncat16, strncat_src8, 11));
+
+// Допустим, прибавляем строку NULL
+//#test strncat_test_add_null
+//    char strncat17[20] = "Add null";
+//    char strncat18[20] = "Add null";
+//    const char *strncat_src9 = NULL;
+//    ck_assert_pstr_eq(strncat(strncat17, strncat_src9, 5), s21_strncat(strncat18, strncat_src9, 5));
+
+// ещё вариация на тему добавления NULL
+//#test strncat_test_add_s21null
+//    char strncat19[20] = "Add null";
+//    char strncat20[20] = "Add null";
+//    ck_assert_pstr_eq(strncat(strncat19, NULL, 5), s21_strncat(strncat20, S21_NULL, 5));
+
+// а теперь наоборот, прибавляем к NULL
+//#test strncat_test_add_to_null
+//    char strncat21[20] = NULL;
+//    char strncat22[20] = S21_NULL;
+//    const char *strncat_src10 = "enought!";
+//    ck_assert_pstr_eq(strncat(strncat21, strncat_src10, 20), s21_strncat(strncat22, strncat_src10, 20));
+
+// ##################################################################### //
+// ---------------------------- s21_strcspn ---------------------------- //
+// ##################################################################### //
+
+// совпадение в начале строки
+#test strcspn_test_1
+    const char *strcspn1 = "abcde12345";
+    const char *strcspn2 = "a";
+    ck_assert_uint_eq(strcspn(strcspn1, strcspn2), s21_strcspn(strcspn1, strcspn2));
+
+// совпадение в середине строки
+#test strcspn_test_2
+    const char *strcspn1 = "abcde12345";
+    const char *strcspn2 = "1";
+    ck_assert_uint_eq(strcspn(strcspn1, strcspn2), s21_strcspn(strcspn1, strcspn2));
+
+// нет совпадений
+#test strcspn_test_3
+    const char *strcspn1 = "Only letters";
+    const char *strcspn2 = "1234567890";
+    ck_assert_uint_eq(strcspn(strcspn1, strcspn2), s21_strcspn(strcspn1, strcspn2));
+
+// Совпадение в конце строки
+#test strcspn_test_4
+    const char *strcspn1 = "abcdefgZ";
+    const char *strcspn2 = "Z";
+    ck_assert_uint_eq(strcspn(strcspn1, strcspn2), s21_strcspn(strcspn1, strcspn2));
+
+// Оба аргумента — пустые строки
+#test strcspn_test_5
+    const char *strcspn1 = "";
+    const char *strcspn2 = "";
+    ck_assert_uint_eq(strcspn(strcspn1, strcspn2), s21_strcspn(strcspn1, strcspn2));
+
+// Первый аргумент пустой
+#test strcspn_test_6
+    const char *strcspn1 = "";
+    const char *strcspn2 = "abc";
+    ck_assert_uint_eq(strcspn(strcspn1, strcspn2), s21_strcspn(strcspn1, strcspn2));
+
+// Второй аргумент пустой
+#test strcspn_test_7
+    const char *strcspn1 = "abcdef";
+    const char *strcspn2 = "";
+    ck_assert_uint_eq(strcspn(strcspn1, strcspn2), s21_strcspn(strcspn1, strcspn2));
+
+// Много символов во втором аргументе
+#test strcspn_test_8
+    const char *strcspn1 = "The quick brown fox";
+    const char *strcspn2 = "xyzuvwq";
+    ck_assert_uint_eq(strcspn(strcspn1, strcspn2), s21_strcspn(strcspn1, strcspn2));
+
+// ##################################################################### //
+// ---------------------------- s21_strpbrk ---------------------------- //
+// ##################################################################### //
+
+// простой случай, первая гласная - е
+#test strpbrk_test_1
+    const char *strpbrk1 = "hello, world";
+    const char *strpbrk2 = "aeiou";
+    ck_assert_str_eq(strpbrk(strpbrk1, strpbrk2), s21_strpbrk(strpbrk1, strpbrk2));
+
+// должен найти 9
+#test strpbrk_test_2
+    const char *strpbrk1 = "1234567890";
+    const char *strpbrk2 = "098";
+    ck_assert_str_eq(strpbrk(strpbrk1, strpbrk2), s21_strpbrk(strpbrk1, strpbrk2));
+
+// нет совпадений
+#test strpbrk_test_3
+    const char *strpbrk1 = "Only letters";
+    const char *strpbrk2 = "1234567890";
+    ck_assert_pstr_eq(strpbrk(strpbrk1, strpbrk2), s21_strpbrk(strpbrk1, strpbrk2));
+
+// Совпадение в начале строки
+#test strpbrk_test_4
+    const char *strpbrk1 = "start match";
+    const char *strpbrk2 = "xys";
+    ck_assert_str_eq(strpbrk(strpbrk1, strpbrk2), s21_strpbrk(strpbrk1, strpbrk2));
+
+// Оба аргумента — пустые строки
+#test strpbrk_test_5
+    const char *strpbrk1 = "";
+    const char *strpbrk2 = "";
+    ck_assert_pstr_eq(strpbrk(strpbrk1, strpbrk2), s21_strpbrk(strpbrk1, strpbrk2));
+
+// Первый аргумент пустой
+#test strpbrk_test_6
+    const char *strpbrk1 = "";
+    const char *strpbrk2 = "abc";
+    ck_assert_pstr_eq(strpbrk(strpbrk1, strpbrk2), s21_strpbrk(strpbrk1, strpbrk2));
+
+// Второй аргумент пустой
+#test strpbrk_test_7
+    const char *strpbrk1 = "abcdef";
+    const char *strpbrk2 = "";
+    ck_assert_pstr_eq(strpbrk(strpbrk1, strpbrk2), s21_strpbrk(strpbrk1, strpbrk2));
+
+// Совпадение в конце строки
+#test strpbrk_test_8
+    const char *strpbrk1 = "Punctuation! 872";
+    const char *strpbrk2 = "0123456789,.?!";
+    ck_assert_str_eq(strpbrk(strpbrk1, strpbrk2), s21_strpbrk(strpbrk1, strpbrk2));
+
+// нуль-терминант в середине
+#test strpbrk_test_9
+    const char *strpbrk1 = "some \0 hidden";
+    const char *strpbrk2 = "hidden";
+    ck_assert_str_eq(strpbrk(strpbrk1, strpbrk2), s21_strpbrk(strpbrk1, strpbrk2));
+
+// ##################################################################### //
+// ----------------------------- s21_strchr ---------------------------- //
+// ##################################################################### //
+
+const char test_str_strchr[] = "Hello, world!";
+int test_chars_strchr[] = {'H', 'e', 'l', 'o', ',', ' ', 'w', 'r', 'd', '!', '\0', 'x', 0, 255};
+// Основные тесты
+for (size_t i = 0; i < sizeof(test_chars_strchr)/sizeof(test_chars_strchr[0]); i++) {
+  char *std_res = strchr(test_str_strchr, test_chars_strchr[i]);
+  char *our_res = s21_strchr(test_str_strchr, test_chars_strchr[i]);
+  
+  if (std_res == NULL) {
+      ck_assert_ptr_null(our_res);
+  } else {
+      ck_assert_ptr_nonnull(our_res);
+      ck_assert_ptr_eq(std_res, our_res);
+  }
+}
+// Специальные тесты
+// 1. Пустая строка
+ck_assert_ptr_null(s21_strchr("", 'a'));
+ck_assert_ptr_eq(strchr("", '\0'), s21_strchr("", '\0'));
+// 2. Поиск нуль-терминатора
+const char *null_term_test = "abc";
+ck_assert_ptr_eq(strchr(null_term_test, '\0'), s21_strchr(null_term_test, '\0'));
+// 3. Символ в начале
+const char *begin_test = "xabc";
+ck_assert_ptr_eq(strchr(begin_test, 'x'), s21_strchr(begin_test, 'x'));
+// 4. Символ в конце
+const char *end_test = "abcd!";
+ck_assert_ptr_eq(strchr(end_test, '!'), s21_strchr(end_test, '!'));
+// 5. Несколько вхождений (должен вернуть первое)
+const char *multi_test = "abacaba";
+ck_assert_ptr_eq(strchr(multi_test, 'a'), s21_strchr(multi_test, 'a'));
+// 6. Длинная строка
+char long_str[1000];
+memset(long_str, 'a', 999);
+long_str[999] = '\0';
+long_str[500] = 'X';
+ck_assert_ptr_eq(strchr(long_str, 'X'), s21_strchr(long_str, 'X'));
+// 7. Символ после нуль-терминатора
+const char with_null_strchr[] = "hello\0world";
+ck_assert_ptr_null(s21_strchr(with_null_strchr, 'w'));
+
+// ##################################################################### //
+// ----------------------------- s21_memchr ---------------------------- //
+// ##################################################################### //
+
+char test_str[] = "Hello, world!";
+int test_chars[] = {'H', 'e', 'l', 'o', ',', ' ', 'w', 'r', 'd', '!', '\0', 'x', 0, 255};
+s21_size_t test_n[] = {0, 1, 5, 10, 14, 20};
+
+// Основные тесты с разными n
+for (size_t i = 0; i < sizeof(test_chars)/sizeof(test_chars[0]); i++) {
+  for (size_t j = 0; j < sizeof(test_n)/sizeof(test_n[0]); j++) {
+    void* std_res = memchr(test_str, test_chars[i], test_n[j]);
+    void* our_res = s21_memchr(test_str, test_chars[i], test_n[j]);
+
+    if (std_res == NULL) {
+      ck_assert_ptr_null(our_res);
+    } else {
+      ck_assert_ptr_nonnull(our_res);
+      ck_assert_ptr_eq(std_res, our_res);
+    }
+  }
+}
+// Специальные тесты
+// 1. Пустой буфер
+ck_assert_ptr_null(s21_memchr("", 'a', 0));
+ck_assert_ptr_null(s21_memchr("", 'a', 1));
+// 2. Поиск нуль-терминатора
+char with_null_memchr[] = "hello\0world";
+ck_assert_ptr_eq(memchr(with_null_memchr, '\0', 12), s21_memchr(with_null_memchr, '\0', 12));
+// 3. Поиск после нуль-терминатора
+ck_assert_ptr_eq(memchr(with_null_memchr, 'w', 12), s21_memchr(with_null_memchr, 'w', 12));
+// 4. Символ за пределами n
+ck_assert_ptr_null(s21_memchr(test_str, '!', 5));
+// 5. Двоичные данные
+unsigned char data[5] = {0x01, 0x02, 0x03, 0x04, 0xFF};
+ck_assert_ptr_eq(memchr(data, 0xFF, 5), s21_memchr(data, 0xFF, 5));
+// 6. Первое вхождение
+char multi[] = "aaa";
+void* res = s21_memchr(multi, 'a', 3);
+ck_assert_ptr_nonnull(res);
+ck_assert_ptr_eq(multi, res); // Должен вернуть первый символ
+
+// ##################################################################### //
+// ----------------------------- s21_strerror -------------------------- //
+// ##################################################################### //
+
+// Стандартные ошибки
+for (int err = 0; err <= 100; err++) {
+  ck_assert_str_eq(s21_strerror(err), strerror(err));
+}
+
+// Граничные значения
+// #if defined(__linux__)
+//   int max_err = S21_ERR_MAX;
+  
+// #elif defined(__APPLE__)
+//   int max_err = S21_ERR_MAX;
+// #endif
+ck_assert_str_eq(s21_strerror(S21_ERR_MAX), strerror(S21_ERR_MAX));
+// Неизвестные ошибки
+ck_assert_str_eq(s21_strerror(-1), strerror(-1));
+ck_assert_str_eq(s21_strerror(S21_ERR_MAX + 1), strerror(S21_ERR_MAX + 1));
+
+// ##################################################################### //
+// ---------------------------- s21_to_lower---------------------------- //
+// ##################################################################### //
+
+// usual case
+#test to_lower_test_1
+	const char* str1 = "A LOT OF LETTERS IN upper_case SHOULD BECOME LOW CASE!";
+	void* res1 = s21_to_lower(str1);
+    ck_assert_str_eq((char*)res1, "a lot of letters in upper_case should become low case!");
+    free(res1);
+
+// mixed case
+#test to_lower_test_2
+    const char *input = "HeLLo WoRLd!";
+    char *res2 = (char*)s21_to_lower(input);
+    ck_assert_str_eq((char*)res2, "hello world!");
+    free(res2);
+
+// special symbols
+#test to_lower_test_3
+    const char *input = "1234:; ., @#$!&?";
+    char *res3 = (char*)s21_to_lower(input);
+    ck_assert_str_eq((char*)res3, "1234:; ., @#$!&?");
+    free(res3);
+
+// empty input
+#test to_lower_test_4
+    const char *input = "";
+    char *res4 = (char*)s21_to_lower(input);
+    ck_assert_str_eq((char*)res4, "");
+    free(res4);
+
+// null input
+#test to_lower_test_5
+    void *res5 = s21_to_lower(NULL);
+    ck_assert_ptr_null(res5);
+    free(res5);
+
+// check for UTF-8
+//#test to_lower_test_6
+//    const char *input = "ПРИВЕТ";
+//    char *res6 = (char*)s21_to_lower(input);
+//    ck_assert_str_eq((char*)res6, "ПРИВЕТ");
+//    free(res6);
+
+// ##################################################################### //
+// ---------------------------- s21_to_upper---------------------------- //
+// ##################################################################### //
+
+// usual case
+#test to_upper_test_1
+    const char* str1 = "Hello, World!\tThese are just numbers: 1234567890!\n";
+    void* res1 = s21_to_upper(str1);
+    ck_assert_str_eq((char*)res1, "HELLO, WORLD!\tTHESE ARE JUST NUMBERS: 1234567890!\n");
+    free(res1);
+
+// mixed case
+#test to_upper_test_2
+    const char *input = "HeLLo WoRLd!";
+    char *res2 = (char*)s21_to_upper(input);
+    ck_assert_str_eq((char*)res2, "HELLO WORLD!");
+    free(res2);
+
+// special symbols
+#test to_upper_test_3
+    const char *input = "1234:; ., @#$!&?";
+    char *res3 = (char*)s21_to_upper(input);
+    ck_assert_str_eq((char*)res3, "1234:; ., @#$!&?");
+    free(res3);
+
+// empty input
+#test to_upper_test_4
+    const char *input = "";
+    char *res4 = (char*)s21_to_upper(input);
+    ck_assert_str_eq((char*)res4, "");
+    free(res4);
+
+// null input
+#test to_upper_test_5
+    void *res5 = s21_to_upper(NULL);
+    ck_assert_ptr_null(res5);
+    free(res5);
+
+// check for UTF-8
+//#test to_upper_test_6
+//    const char *input = "привет";
+//    char *res6 = (char*)s21_to_upper(input);
+//    ck_assert_str_eq((char*)res6, "привет");
+//    free(res6);
+
+
+// ##################################################################### //
+// ---------------------------- s21_parser.c --------------------------- //
+// ##################################################################### //
+
+// #test str_to_int_1
+//     int num = str_to_int("123");
+//     ck_assert_int_eq(num, 123);     // ожидаем получить число 123
+
+// #test str_to_int_2
+//     int num = str_to_int("-123");
+//     ck_assert_int_eq(num, -123);     // ожидаем получить число -123
+
+// #test str_to_int_3
+//     int num = str_to_int("0");
+//     ck_assert_int_eq(num, 0);     // ожидаем получить число 0
+
+// #test str_to_int_4
+//     int num = str_to_int("abc123");
+//     ck_assert_int_eq(num, 0);     // ожидаем получить число 0
+
+#test is_digit_1
+    int num = is_digit('5');
+    ck_assert_int_eq(num, 1);     // ожидаем получить 1 - true
+
+#test is_digit_2
+    int num = is_digit('A');
+    ck_assert_int_eq(num, 0);     // ожидаем получить 0 - true
+
+#test specifiers_clean_1
+    Specifiers specs;
+    specifiers_clean(&specs);
+    ck_assert_int_eq(specs.minus, 0);
+    ck_assert_int_eq(specs.plus, 0);
+
+#test flags_conflict_1
+    Specifiers specs;
+    specifiers_clean(&specs);
+    specs.plus = 1;
+    specs.space = 0;
+    flags_conflict(&specs);
+    ck_assert_int_eq(specs.plus, 1);
+    ck_assert_int_eq(specs.space, 0);
+
+#test flags_conflict_2
+    Specifiers specs;
+    specifiers_clean(&specs);
+    specs.zero = 1;
+    specs.minus = 1;
+    flags_conflict(&specs);
+    ck_assert_int_eq(specs.zero, 0);
+    ck_assert_int_eq(specs.minus, 1);
+
+#test get_flags_1
+    Specifiers specs;
+    specifiers_clean(&specs);
+    char format[] = "+010.67f";
+    char *ptr = format;get_flags(&specs, &ptr);
+    ck_assert_int_eq(specs.plus, 1);
+    ck_assert_int_eq(specs.zero, 1);
+
+#test get_flags_2
+    Specifiers specs;
+    specifiers_clean(&specs);
+    char format[] = "-# 10.67f";
+    char *ptr = format;
+    get_flags(&specs, &ptr);
+    ck_assert_int_eq(specs.minus, 1);
+    ck_assert_int_eq(specs.hash, 1);
+    ck_assert_int_eq(specs.space, 1);
+
+#test get_flags_3
+    Specifiers specs;
+    specifiers_clean(&specs);
+    char format[] = "10.67f";
+    char *ptr = format;
+    get_flags(&specs, &ptr);
+    ck_assert_int_eq(specs.zero, 0);
+
+
+#test scan_int_1
+    char format[] = "123.67f";
+    char *ptr = format;
+    int width = scan_int(&ptr);
+    ck_assert_int_eq(width, 123);
+
+#test get_width_1
+    Specifiers specs;
+    specifiers_clean(&specs);
+    va_list args;
+    char format[] = "1234.67f";
+    char *ptr = format;
+    get_width(&specs, &ptr, &args);
+    ck_assert_int_eq(specs.width, 1234);
+
+#test get_accuracy_1
+    Specifiers specs;
+    specifiers_clean(&specs);
+    va_list args;
+    char format[] = ".678f";
+    char *ptr = format;
+    get_accuracy(&specs, &ptr, &args);
+    ck_assert_int_eq(specs.accuracy, 678);
+
+#test get_accuracy_2
+    Specifiers specs;
+    specifiers_clean(&specs);
+    va_list args;
+    char format[] = ".*f";
+    char *ptr = format;
+    get_accuracy(&specs, &ptr, &args);
+    ck_assert_int_eq(specs.dot, 1);
+
+#test get_length_1
+    Specifiers specs;
+    specifiers_clean(&specs);
+    char format[] = "lf";
+    char *ptr = format;
+    get_length(&specs, &ptr);
+    ck_assert_int_eq(specs.length, 'l');
+
+#test get_length_2
+    Specifiers specs;
+    specifiers_clean(&specs);
+    char format[] = "f";//нет ширины.
+    char *ptr = format;
+    get_length(&specs, &ptr);
+    ck_assert_int_eq(specs.length, 0);
+
+#test specifiers_parser_1
+    Specifiers specs;
+    va_list args;
+    char *format = "%+ 021.*hg";
+    specifiers_parser(&specs, &format, &args);
+    ck_assert_int_eq(specs.plus, 1);
+    ck_assert_int_eq(specs.space, 0);
+    ck_assert_int_eq(specs.zero, 1);
+    ck_assert_int_eq(specs.width, 21);
+    ck_assert_int_eq(specs.dot, 1);
+    ck_assert_int_eq(specs.length, 'h');
+
+#test specifiers_parser_2
+    Specifiers specs;
+    va_list args;
+    char *format = "%E";
+    specifiers_parser(&specs, &format, &args);
+    ck_assert_int_eq(specs.spec_char, 'E');
+
+#test specifiers_parser_5
+    void test_parser(int x, ...) {
+        Specifiers specs;
+        va_list args;
+        va_start(args, x);
+        char *format = "%*.*f";
+        specifiers_parser(&specs, &format, &args);
+        ck_assert_int_eq(specs.width, 10);
+        ck_assert_int_eq(specs.accuracy, 20);
+        va_end(args);
+    }
+    test_parser(1,10,20);
+
+    //проверка отрицательной точности через вариативный аргумент
+#test specifiers_parser_6
+    void test_parser(int x, ...) {
+        Specifiers specs;
+        va_list args;
+        va_start(args, x);
+        char *format = "%*.*f";
+        specifiers_parser(&specs, &format, &args);
+        ck_assert_int_eq(specs.width, 10);
+        ck_assert_int_eq(specs.accuracy, 0);//ожидаем точность 0
+        va_end(args);
+    }
+    test_parser(1,10,-20);
+
+    //проверка отрицательной ширины заданной через аргументы
+#test specifiers_parser_7
+    void test_parser(int x, ...) {
+        Specifiers specs;
+        va_list args;
+        va_start(args, x);
+        char *format = "%0*f";
+        specifiers_parser(&specs, &format, &args);
+        ck_assert_int_eq(specs.width, 10);
+        ck_assert_int_eq(specs.zero, 0);
+        va_end(args);
+    }
+    test_parser(1,-10,20);
+
+    //проверка отрицательной ширины заданной через аргументы и флаг - пробел.
+#test specifiers_parser_8
+    void test_parser(int x, ...) {
+        Specifiers specs;
+        va_list args;
+        va_start(args, x);
+        char *format = "% 0*f";
+        specifiers_parser(&specs, &format, &args);
+        ck_assert_int_eq(specs.width, 10);
+        ck_assert_int_eq(specs.zero, 0);//флаг minus отключает флаг пробел
+        ck_assert_int_eq(specs.minus, 1);//ожидаем флаг minus
+        va_end(args);
+    }
+    test_parser(1,-10,20);
+
+// ##################################################################### //
+// ----------------------------- s21_strncpy --------------------------- //
+// ##################################################################### //
+
+// Тест 1. 
+#test test_strncpy_basic
+const int str_size = 99;
+const char* src = "This is a test string, with punctuation! 123.";
+char expected[str_size];
+char result[str_size];
+
+strncpy(expected, src, str_size); // Оригинальная функция
+s21_strncpy(result, src, str_size);
+
+// Проверяем, что строки совпадают
+ck_assert_str_eq(result, expected);
+
+// Тест 2. 
+const int short_size = 9;
+strncpy(expected, src, short_size); // Оригинальная функция
+s21_strncpy(result, src, short_size);
+
+// Проверяем, что строки совпадают
+ck_assert_str_eq(result, expected);
+
+// ##################################################################### //
+// ----------------------------- s21_strrchr --------------------------- //
+// ##################################################################### //
+
+// Тест 1.
+#test test_strrchr_basic
+const char *src = "This is a test string, with punctuation! 123.";
+char *expected;
+char *result;
+
+const char find = 'i';
+expected = strrchr(src, find); // Оригинальная функция
+result = s21_strrchr(src, find);
+
+// Проверяем, что Указатели совпадают
+ck_assert_ptr_eq(result, expected);
+
+// Тест 2.
+//#test test_strrchr_not_found
+const char not_exists = 'Z';
+expected = strrchr(src, not_exists); // Оригинальная функция
+result = s21_strrchr(src, not_exists);
+
+ck_assert_ptr_eq(result, expected);
+
+// Тест 3.
+//#test strrchr_first_char
+const char first_char = src[0];
+expected = strrchr(src, first_char); // Оригинальная функция
+result = s21_strrchr(src, first_char);
+
+ck_assert_ptr_eq(result, expected);
+
+// Тест 4.
+//#test strrchr_last_char
+const char last_char = src[strlen(src) - 1];
+expected = strrchr(src, last_char); // Оригинальная функция
+result = s21_strrchr(src, last_char);
+
+ck_assert_ptr_eq(result, expected);
+
+// Тест 5.
+#test strrchr_null_byte
+const char* src = "This is a\0test string, with punctuation! 123.";
+char *expected;
+char *result;
+
+const char find = 'i';
+expected = strrchr(src, find); // Оригинальная функция
+result = s21_strrchr(src, find);
+
+ck_assert_ptr_eq(result, expected);
+
+// Тест 6.
+#test strrchr_empty_string
+const char* src = "";
+char *expected;
+const char *result;
+
+const char find = 'i';
+expected = strrchr(src, find); // Оригинальная функция
+result = s21_strrchr(src, find);
+
+ck_assert_ptr_eq(result, expected);
+
+// ##################################################################### //
+// ----------------------------- s21_insert ---------------------------- //
+// ##################################################################### //
+
+// Тест: Вставка в начало строки
+#test insert_start
+char *result = s21_insert("world!", "Hello, ", 0);
+if (result == NULL){
+    ck_abort_msg("Expected non-NULL result");
+}
+else if (strcmp(result, "Hello, world!") != 0) {
+    free(result);
+    ck_abort_msg("Result mismatch");
+}
+else {
+    ck_assert_ptr_nonnull(result);
+    ck_assert_str_eq(result, "Hello, world!");
+    free(result);
+}
+
+
+// Тест: Вставка в середину строки
+#test insert_middle
+char *result = s21_insert("Hello world!", "beautiful ", 6);
+if (result == NULL){
+    ck_abort_msg("Expected non-NULL result");
+}
+else if (strcmp(result, "Hello beautiful world!") != 0) {
+    free(result);
+    ck_abort_msg("Result mismatch");
+}
+else {
+    ck_assert_ptr_nonnull(result);
+    ck_assert_str_eq(result, "Hello beautiful world!");
+    free(result);
+}
+
+// Тест: Вставка в конец строки
+#test insert_end
+char *result = s21_insert("Hello", ", world!", 5);
+if (result == NULL){
+    ck_abort_msg("Expected non-NULL result");
+}
+else if (strcmp(result, "Hello, world!") != 0) {
+    free(result);
+    ck_abort_msg("Result mismatch");
+}
+else {
+    ck_assert_ptr_nonnull(result);
+    ck_assert_str_eq(result, "Hello, world!");
+    free(result);
+}
+
+// Тест: Вставка в пустую строку
+#test insert_empty_src
+char *result = s21_insert("", "test", 0);
+if (result == NULL){
+    ck_abort_msg("Expected non-NULL result");
+}
+else if (strcmp(result, "test") != 0) {
+    free(result);
+    ck_abort_msg("Result mismatch");
+}
+else{
+    ck_assert_ptr_nonnull(result);
+    ck_assert_str_eq(result, "test");
+    free(result);
+}
+
+// Тест: Вставка пустой строки
+#test insert_empty_str
+char *result = s21_insert("Hello world!", "", 5);
+if (result == NULL){
+    ck_abort_msg("Expected non-NULL result");
+}
+else if (strcmp(result, "Hello world!") != 0) {
+    free(result);
+    ck_abort_msg("Result mismatch");
+}
+else {
+    ck_assert_ptr_nonnull(result);
+    ck_assert_str_eq(result, "Hello world!");
+    free(result);
+}
+
+// Тест: Проверка памяти
+#test memory_allocation
+const char *long_str = "This is a very long string This is a very long string This is a very long string ...";
+char *result = s21_insert("Hello", long_str, 3);
+if (result == NULL){
+    ck_abort_msg("Expected non-NULL result");
+}
+else{
+    ck_assert_ptr_nonnull(result);
+    free(result);
+}
+
+
+// Тест: Некорректный индекс
+#test invalid_index
+char *result = s21_insert("Hello", " world!", 10);
+if (result != NULL){
+    free(result);
+    ck_abort_msg("Expected NULL result");
+}
+
+// Тест: NULL параметры
+#test null_parameters
+ck_assert_ptr_null(s21_insert(NULL, "test", 0));
+ck_assert_ptr_null(s21_insert("test", NULL, 0));
+ck_assert_ptr_null(s21_insert(NULL, NULL, 0));
+
+
+// ##################################################################### //
+// ----------------------------- s21_memset ---------------------------- //
+// ##################################################################### //
+//Тест 1: Заполняем нулями
+#test s21_memset_zero_fill
+char buffer[10] = "abcdefghi";
+char s21_buffer[10] = "abcdefghi";
+memset(buffer, 0, sizeof(buffer));
+s21_memset(s21_buffer, 0, sizeof(s21_buffer));
+ck_assert_mem_eq(buffer, s21_buffer, 10);
+
+//Тест 2: Заполняем символом '\0'
+#test s21_memset_termination_fill
+char buffer[10] = "abcdefghi";
+char s21_buffer[10] = "abcdefghi";
+memset(buffer, '\0', sizeof(buffer));
+s21_memset(s21_buffer, '\0', sizeof(s21_buffer));
+ck_assert_mem_eq(buffer, s21_buffer, 10);
+
+//Тест 3: Заполняем строку с символом \0' в середине
+#test s21_memset_text_termination
+char buffer[10] = "ab\0cdefghi";
+char s21_buffer[10] = "ab\0cdefghi";
+memset(buffer, '\0', sizeof(buffer));
+s21_memset(s21_buffer, '\0', sizeof(s21_buffer));
+ck_assert_mem_eq(buffer, s21_buffer, 10);
+
+//Тест 4: Заполняем половину строки
+#test s21_memset_partly_fill
+char buffer[10] = "abcdefghi";
+char s21_buffer[10] = "abcdefghi";
+memset(buffer, '0', 5);
+s21_memset(s21_buffer, '0', 5);
+ck_assert_mem_eq(buffer, s21_buffer, 10);
+
+//Тест 5: Тестируем файл с бинарными данными
+#test s21_memset_binary_pattern
+unsigned char buffer[256];
+unsigned char s21_buffer[256];
+
+for (int i = 0; i < 256; i++) {
+    buffer[i] = s21_buffer[i] = (unsigned char)(rand() % 256);
+}
+unsigned char fill_value = 0xAB; // 0xAB - это число 171 переведённое в шестнацетиричный формат
+size_t fill_size = 128;
+memset(buffer, fill_value, fill_size);
+s21_memset(s21_buffer, fill_value, fill_size);
+ck_assert_mem_eq(buffer, s21_buffer, fill_size);
+
+
+// ##################################################################### //
+// ----------------------------- s21_memcmp ---------------------------- //
+// ##################################################################### //
+//Тест 1: Сравниваем пустые значение
+#test s21_memcmp_empty
+char *str1 = "";
+char *str2 = "";
+ck_assert_int_eq(memcmp(str1, str2, 1), s21_memcmp(str1, str2, 1));
+
+//Тест 2: Сравниваем разные значение
+#test s21_memcmp_diferent
+char *str1 = "Hello";
+char *str2 = "Hell";
+ck_assert_int_eq(memcmp(str1, str2, 3), s21_memcmp(str1, str2, 3));
+
+//Тест 3: Сравниваем одинаковые значение
+#test s21_memcmp_normal
+char *str1 = "Hello again. You've been alone awhile";
+char *str2 = "Hello again. You've been alone awhile";
+ck_assert_int_eq(memcmp(str1, str2, 37), s21_memcmp(str1, str2, 37));
+
+//Тест 4: Сравниваем значения в нулевом диапазоне
+#test s21_memcmp_zero
+char *str1 = "Hello again. You've been alone awhile";
+char *str2 = "Hello again. You've been alone awhile";
+ck_assert_int_eq(memcmp(str1, str2, 0), s21_memcmp(str1, str2, 0));
+
+
+
+// ##################################################################### //
+// ----------------------------- s21_memcpy ---------------------------- //
+// ##################################################################### //
+
+//Тест 1: Копируем строку частично
+#test s21_memcpy_normal
+char *src = "Hello again. You've been alone awhile;";
+char dest[12] = {0};
+char s21_dest[12] = {0};
+memcpy(dest, src, 11);
+s21_memcpy(s21_dest, src, 11);
+ck_assert_mem_eq(dest, s21_dest, 11);
+
+//Тест 2: Копируем строку полностью
+#test s21_memcpy_full_string
+const char *src = "Full string copy";
+char dest[20] = {0};
+char s21_dest[20] = {0};
+memcpy(dest, src, strlen(src) + 1);
+s21_memcpy(s21_dest, src, strlen(src) + 1);
+ck_assert_str_eq(dest, s21_dest);
+
+//Тест 3: Копируем строку в диапазоне 0 байт
+#test s21_memcpy_zero_size
+const char *src = "No copy";
+char dest[10] = {0};
+char s21_dest[10] = {0};
+memcpy(dest, src, 0);
+s21_memcpy(s21_dest, src, 0);
+ck_assert_mem_eq(dest, s21_dest, 10);
+
+//Тест 4: Тестируем с бинарным файлом
+#test s21_memcpy_binary_data
+ unsigned char src[] = {0xAA, 0xBB, 0xCC, 0xDD};
+ unsigned char dest[4] = {0};
+ unsigned char s21_dest[4] = {0};
+ memcpy(dest, src, sizeof(src));
+ s21_memcpy(s21_dest, src, sizeof(src));
+ ck_assert_mem_eq(dest, s21_dest, sizeof(src));
+
+//Тест 5: Сравниваем копирование большого размера
+#test s21_memcpy_large_size
+const size_t size = 1 << 20;
+char *src = malloc(size);
+char *dest = malloc(size);
+char *s21_dest = malloc(size);
+ck_assert_ptr_nonnull(src);
+ck_assert_ptr_nonnull(dest);
+ck_assert_ptr_nonnull(s21_dest);
+memset(src, 'A', size);
+s21_memcpy(s21_dest, src, size);
+memcpy(dest, src, size);
+ck_assert_mem_eq(dest, s21_dest, size);
+free(src);
+free(dest);
+free(s21_dest);
+
+//Тест 6: Тестируем работу с NULL
+#test s21_memcpy_null_pointers
+void *result = s21_memcpy(NULL, NULL, 10);
+ck_assert_ptr_null(result);
+
+// ##################################################################### //
+// ---------------------------- s21_strncmp ---------------------------- //
+// ##################################################################### //
+//Тест 1: Сравниваем одинаковые строки
+#test s21_strncmp_equal
+  const char *s1 = "Hello, world!";
+  const char *s2 = "Hello, world!";
+  int res = s21_strncmp(s1, s2, 13);
+  int expected = strncmp(s1, s2, 13);
+  ck_assert_int_eq(res, expected);
+  ck_assert_int_eq(res, 0);
+
+//Тест 2: Сравниваем со строкой меньшего значения
+#test s21_strncmp_1
+int sign(int x) {
+    return (x>0) - (x<0);
+}
+char buf1[] = "test string";
+char buf2[] = "test string";
+ck_assert_int_eq(sign(strncmp(buf1, buf2, s21_strlen(buf1))), sign(s21_memcmp(buf1, buf2, s21_strlen(buf1))));
+
+#test s21_strncmp_less
+  const char *s1 = "Apple";
+  const char *s2 = "Banana";
+  int res = s21_strncmp(s1, s2, 5);
+  int expected = strncmp(s1, s2, 5);
+  ck_assert_int_eq(res, expected);
+  ck_assert_int_lt(res, 0);
+
+//Тест 3: Сравниваем со строкой большего значения
+#test s21_strncmp_greater
+  const char *s1 = "Zebra";
+  const char *s2 = "Apple";
+  int res = s21_strncmp(s1, s2, 5);
+  int expected = strncmp(s1, s2, 5);
+  ck_assert_int_eq(res, expected);
+  ck_assert_int_gt(res, 0);
+
+//Тест 4: Сравниваем с частично совпадающей строкой
+#test s21_strncmp_partial_equal
+  const char *s1 = "Hello";
+  const char *s2 = "Hello, world!";
+  int res = s21_strncmp(s1, s2, 5);
+  int expected = strncmp(s1, s2, 5);
+  ck_assert_int_eq(res, expected);
+  ck_assert_int_eq(res, 0);
+
+//Тест 5: Сравниваем разные строки
+#test s21_strncmp_partial_diff
+  const char *s1 = "Hello";
+  const char *s2 = "Hellp";
+  int res = s21_strncmp(s1, s2, 5);
+  int expected = strncmp(s1, s2, 5);
+  ck_assert_int_eq(res, expected);
+  ck_assert_int_lt(res, 0);
+
+//Тест 6: Сравниваем строки в нулевом диапазоне
+#test s21_strncmp_zero_length
+  const char *s1 = "Hello";
+  const char *s2 = "World";
+  int res = s21_strncmp(s1, s2, 0);
+  int expected = strncmp(s1, s2, 0);
+  ck_assert_int_eq(res, expected);
+  ck_assert_int_eq(res, 0);
+
+//Тест 7: Сравниваем разные строки разной длины
+#test s21_strncmp_diff_length
+  const char *s1 = "Short";
+  const char *s2 = "Longer string";
+  int res = s21_strncmp(s1, s2, 10);
+  int expected = strncmp(s1, s2, 10);
+  ck_assert_int_eq(res, expected);
+  ck_assert_int_gt(res, 0);
+
+//Тест 8: Сравниваем строки с символом '\0' Вар.1 
+#test s21_strncmp_left_termination
+  const char *s1 = "Hel\0lo";
+  const char *s2 = "Hello";
+  int res = s21_strncmp(s1, s2, 5);
+  int expected = strncmp(s1, s2, 5);
+  ck_assert_int_eq(res, expected);
+  ck_assert_int_ne(res, 0); 
+
+//Тест 9: Сравниваем строки с символом '\0' Вар.2
+#test s21_strncmp_right_termination
+  const char *s1 = "Hello";
+  const char *s2 = "Hel\0lo";
+  int res = s21_strncmp(s1, s2, 5);
+  int expected = strncmp(s1, s2, 5);
+  ck_assert_int_eq(res, expected);
+  ck_assert_int_ne(res, 0);  
+
+  //Тест 10: Сравниваем строки с символом '\0' Вар.3
+#test s21_strncmp_identical_termination
+  const char *s1 = "Hel\0lo";
+  const char *s2 = "Hel\0lo";
+  int res = s21_strncmp(s1, s2, 6);
+  int expected = strncmp(s1, s2, 6);
+  ck_assert_int_eq(res, expected);
+  ck_assert_int_eq(res, 0);  
+
+
+// ##################################################################### //
+// ---------------------------- s21_common ----------------------------- //
+// ##################################################################### //
+#test reverse_str_test
+    char str[] = "Hello";
+    reverse_str(str);
+    ck_assert_str_eq(str, "olleH");
+
+// ##################################################################### //
+// ---------------------------- s21_f_spec ----------------------------- //
+// ##################################################################### //
+// простое дробное число без флагов
+#test f_spec_1
+    const char format[] = "10.5 = %f";
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, 10.5);
+    s21_sprintf(str2, format, 10.5);
+    ck_assert_str_eq(str1, str2);
+
+// простое дробное число c шириной
+#test f_spec_2
+    const char format[] = "10.5 = %10f";
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, 10.5);
+    s21_sprintf(str2, format, 10.5);
+    ck_assert_str_eq(str1, str2);
+
+// простое дробное число c точностью
+#test f_spec_3
+    const char format[] = "10.5 = %.4f";
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, 10.5);
+    s21_sprintf(str2, format, 10.5);
+    ck_assert_str_eq(str1, str2);
+
+// простое дробное число c шириной и точностью
+#test f_spec_4
+    const char format[] = "10.5 = %10.8f";
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, 10.5);
+    s21_sprintf(str2, format, 10.5);
+    ck_assert_str_eq(str1, str2);
+
+// простое дробное число c шириной и точкой, но не заданной точностью
+#test f_spec_5
+    const char format[] = "10.5 = %10.f";
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, 10.5);
+    s21_sprintf(str2, format, 10.5);
+    ck_assert_str_eq(str1, str2);
+
+// простое дробное число c шириной и точностью 0
+#test f_spec_6
+    const char format[] = "10.5 = %10.0f";
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, 10.5);
+    s21_sprintf(str2, format, 10.5);
+    ck_assert_str_eq(str1, str2);
+
+// простое дробное число c шириной, флагом 0 и точностью
+#test f_spec_7
+    const char format[] = "10.5 = %010.2f";
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };             
+    sprintf(str1, format, 10.5);
+    s21_sprintf(str2, format, 10.5);
+    ck_assert_str_eq(str1, str2);
+
+// простое дробное число c шириной, флагом - и точностью
+#test f_spec_8
+    const char format[] = "10.5 = %-10.3f";
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, 10.5);
+    s21_sprintf(str2, format, 10.5);
+    ck_assert_str_eq(str1, str2);
+
+// простое дробное число c шириной, флагом + и точностью
+#test f_spec_9
+    const char format[] = "10.5 = %+10.3f";
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, 10.5);
+    s21_sprintf(str2, format, 10.5);
+    ck_assert_str_eq(str1, str2);
+
+// простое дробное число c шириной, флагом ' ' и точностью
+#test f_spec_10
+    const char format[] = "10.5 = % 5.3f";
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, 10.5);
+    s21_sprintf(str2, format, 10.5);
+    ck_assert_str_eq(str1, str2);
+
+// отрицательное дробное число c шириной, флагом 0 и точностью
+#test f_spec_11
+    const char format[] = "-10.5 = %010.2f";
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, -10.5);
+    s21_sprintf(str2, format, -10.5);
+    ck_assert_str_eq(str1, str2);
+
+// отрицательное дробное число c шириной и точностью
+#test f_spec_12
+    const char format[] = "-10.5 = %10.2f";
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, -10.5);
+    s21_sprintf(str2, format, -10.5);
+    ck_assert_str_eq(str1, str2);
+
+// 0 без флагов
+#test f_spec_zero_1
+    double zero = 0.0;
+    const char format[] = "zero = %lf";
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, zero);
+    s21_sprintf(str2, format, zero);
+    ck_assert_str_eq(str1, str2);
+
+// 0 c шириной
+#test f_spec_zero_2
+    double zero = 0.0;
+    const char format[] = "zero = %10lf";
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, zero);
+    s21_sprintf(str2, format, zero);
+    ck_assert_str_eq(str1, str2);
+
+// 0 c точностью
+#test f_spec_zero_3
+    double zero = 0.0;
+    const char format[] = "zero = %.3lf";
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, zero);
+    s21_sprintf(str2, format, zero);
+    ck_assert_str_eq(str1, str2);
+
+// 0 с шириной и точностью
+#test f_spec_zero_4
+    double zero = 0.0;
+    const char format[] = "zero = %15.8lf";
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, zero);
+    s21_sprintf(str2, format, zero);
+    ck_assert_str_eq(str1, str2);
+
+// 0 c шириной и точкой, но не заданной точностью
+#test f_spec_zero_5
+    double zero = 0.0;
+    const char format[] = "zero = %15.lf";
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, zero);
+    s21_sprintf(str2, format, zero);
+    ck_assert_str_eq(str1, str2);
+
+// 0 c шириной и точностью 0
+#test f_spec_zero_6
+    double zero = 0.0;
+    const char format[] = "zero = %10.0lf";
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, zero);
+    s21_sprintf(str2, format, zero);
+    ck_assert_str_eq(str1, str2);
+
+// 0 c шириной, флагом 0 и точностью
+#test f_spec_zero_7
+    double zero = 0.0;
+    const char format[] = "zero = %010.3lf";
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, zero);
+    s21_sprintf(str2, format, zero);
+    ck_assert_str_eq(str1, str2);
+
+// 0 c шириной, флагом - и точностью
+#test f_spec_zero_8
+    double zero = 0.0;
+    const char format[] = "zero = %-10.3lf";
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, zero);
+    s21_sprintf(str2, format, zero);
+    ck_assert_str_eq(str1, str2);
+
+// 0 c шириной, флагом + и точностью
+#test f_spec_zero_9
+    double zero = 0.0;
+    const char format[] = "zero = %+10.3lf";
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, zero);
+    s21_sprintf(str2, format, zero);
+    ck_assert_str_eq(str1, str2);
+
+// 0 c шириной, флагом ' ' и точностью
+#test f_spec_zero_10
+    double zero = 0.0;
+    const char format[] = "zero = % 6.3lf";
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, zero);
+    s21_sprintf(str2, format, zero);
+    ck_assert_str_eq(str1, str2);
+
+// отрицательный 0 c шириной, флагом 0 и точностью
+#test f_spec_zero_11
+    double zero = -0.0;
+    const char format[] = "zero = %08.3lf";
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, zero);
+    s21_sprintf(str2, format, zero);
+    ck_assert_str_eq(str1, str2);
+
+// отрицательный 0 c шириной, флагом 0 и точностью
+#test f_spec_zero_12
+    double zero = -0.0;
+    const char format[] = "zero = %10.4lf";
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, zero);
+    s21_sprintf(str2, format, zero);
+    ck_assert_str_eq(str1, str2);
+
+// Lf без флагов
+#test f_spec_long_double_1
+    long double n = 1234.5678901200000005999999999999L;;
+    const char format[] = "n = %Lf";
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n);
+    s21_sprintf(str2, format, n);
+    ck_assert_str_eq(str1, str2);
+
+// Lf c шириной
+#test f_spec_long_double_2
+    long double n = 1234.5678901200000005999999999999L;;
+    const char format[] = "n = %20Lf";
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n);
+    s21_sprintf(str2, format, n);
+    ck_assert_str_eq(str1, str2);
+
+// Lf c точностью
+#test f_spec_long_double_3
+    long double n = 1234.5678901200000005999999999999L;;
+    const char format[] = "n = %.3Lf";
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n);
+    s21_sprintf(str2, format, n);
+    ck_assert_str_eq(str1, str2);
+
+// Lf c большой точностью
+#test f_spec_long_double_4
+    long double n = 1234.5678901200000005999999999999L;;
+    const char format[] = "n = %.20Lf";
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n);
+    s21_sprintf(str2, format, n);
+    ck_assert_str_eq(str1, str2);
+
+// Lf с шириной и точностью
+#test f_spec_long_double_5
+    long double n = 1234.5678901200000005999999999999L;;
+    const char format[] = "n = %40.10Lf";
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n);
+    s21_sprintf(str2, format, n);
+    ck_assert_str_eq(str1, str2);
+
+// Lf с шириной и точкой без заданной точности
+#test f_spec_long_double_6
+    long double n = 1234.5678901200000005999999999999L;;
+    const char format[] = "n = %30.Lf";
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n);
+    s21_sprintf(str2, format, n);
+    ck_assert_str_eq(str1, str2);
+
+// Lf с шириной и точностью 0
+#test f_spec_long_double_7
+    long double n = 1234.5678901200000005999999999999L;;
+    const char format[] = "n = %30.0Lf";
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n);
+    s21_sprintf(str2, format, n);
+    ck_assert_str_eq(str1, str2);
+
+// Lf c шириной, флагом 0 и точностью 0
+#test f_spec_long_double_8
+    long double n = 1234.5678901200000005999999999999L;;
+    const char format[] = "n = %040.0Lf";
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n);
+    s21_sprintf(str2, format, n);
+    ck_assert_str_eq(str1, str2);
+
+// Lf c шириной, флагом - и точностью
+#test f_spec_long_double_9
+    long double n = 1234.5678901200000005999999999999L;;
+    const char format[] = "n = %-40.17Lf";
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n);
+    s21_sprintf(str2, format, n);
+    ck_assert_str_eq(str1, str2);
+
+// Lf c шириной, флагом + и точностью
+#test f_spec_long_double_10
+    long double n = 1234.5678901200000005999999999999L;;
+    const char format[] = "n = %+30.4Lf";
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n);
+    s21_sprintf(str2, format, n);
+    ck_assert_str_eq(str1, str2);
+
+// Lf c шириной, флагом ' ' и точностью
+#test f_spec_long_double_11
+    long double n = 1234.5678901200000005999999999999L;;
+    const char format[] = "n = % 30.4Lf";
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n);
+    s21_sprintf(str2, format, n);
+    ck_assert_str_eq(str1, str2);
+
+// отрицательное Lf число c шириной, флагом 0 и точностью
+#test f_spec_long_double_12
+    long double n = -1234.5678901200000005999999999999L;;
+    const char format[] = "n = %030.4Lf";
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n);
+    s21_sprintf(str2, format, n);
+    ck_assert_str_eq(str1, str2);
+
+// отрицательное Lf число c шириной, флагом + и точностью
+#test f_spec_long_double_13
+    long double n = -123456789.56799999L;
+    const char format[] = "n = %+40.7Lf";
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n);
+    s21_sprintf(str2, format, n);
+    ck_assert_str_eq(str1, str2);
+
+// тест nan
+#test f_spec_nan
+     const char format[] = "not a number = |%f|";
+     char str1[200] = { 0 };
+     char str2[200] = { 0 };
+     sprintf(str1, format, 0.0/0.0);
+     s21_sprintf(str2, format, 0.0/0.0);
+     ck_assert_str_eq(str1, str2);
+
+// тест inf
+#test f_spec_inf
+    const char format[] = "infinity = %f";
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, 1000/0.0);
+    s21_sprintf(str2, format, 1000/0.0);
+    ck_assert_str_eq(str1, str2);
+
+// тест -inf
+#test f_spec_minus_inf
+    const char format[] = "-infinity = %f";
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, -1000/0.0);
+    s21_sprintf(str2, format, -1000/0.0);
+    ck_assert_str_eq(str1, str2);
+
+#test f_spec_nan_2
+     const char format[] = "not a number = |%+010f|";
+     char str1[200] = { 0 };
+     char str2[200] = { 0 };
+     sprintf(str1, format, 0.0/0.0);
+     s21_sprintf(str2, format, 0.0/0.0);
+     ck_assert_str_eq(str1, str2);
+
+// тест inf
+#test f_spec_inf_2
+    const char format[] = "infinity = %-10f";
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, 1000/0.0);
+    s21_sprintf(str2, format, 1000/0.0);
+    ck_assert_str_eq(str1, str2);
+
+// тест -inf
+#test f_spec_minus_inf_2
+    const char format[] = "-infinity = %010f";
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, -1000/0.0);
+    s21_sprintf(str2, format, -1000/0.0);
+    ck_assert_str_eq(str1, str2);
+
+// тест очень маленькое число
+#test f_spec_small_n
+    const char format[] = "small number = %+-100.30Lf";
+    long double n = 0.0000000000000000000000000012L;
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n);
+    s21_sprintf(str2, format, n);
+    ck_assert_str_eq(str1, str2);
+
+// тест очень маленькое число
+#test f_spec_small_negative_n
+    const char format[] = "small number = %-.25Lf";
+    long double n = -0.00000000000000000001L;
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n);
+    s21_sprintf(str2, format, n);
+    ck_assert_str_eq(str1, str2);
+
+// тест очень маленькое число
+#test f_spec_small_negative_n2
+    const char format[] = "small number = %15.10lf";
+    double n = -0.04561l;
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n);
+    s21_sprintf(str2, format, n);
+    ck_assert_str_eq(str1, str2);
+
+// тест на округление с увеличением целой части
+#test f_spec_rounding
+    const char format[] = "number = %-50.5lf";
+    double n = -99.9999991;
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n);
+    s21_sprintf(str2, format, n);
+    ck_assert_str_eq(str1, str2);
+
+// тест на округление с большой точностью
+#test f_spec_no_rounding
+    const char format[] = "number = %0100.50Lf";
+    long double n = -99.9999999999999999999999L;
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n);
+    s21_sprintf(str2, format, n);
+    ck_assert_str_eq(str1, str2);
+
+// ##################################################################### //
+// ---------------------------- s21_e_spec ----------------------------- //
+// ##################################################################### //
+// большое число без заданной точности
+#test e_spec_big_1
+    const char format[] = "1234567890.3542289L = %Lf %Le";
+    long double n = 1234567890.3542289L;
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n, n);
+    s21_sprintf(str2, format, n, n);
+    ck_assert_str_eq(str1, str2);
+
+// большое число с маленькой точностью
+#test e_spec_big_2
+    const char format[] = "1234567890.3542289L = %.2Lf %.2Le";
+    long double n = 1234567890.3542289L;
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n, n);
+    s21_sprintf(str2, format, n, n);
+    ck_assert_str_eq(str1, str2);
+
+// большое число с большой точностью
+#test e_spec_big_3
+    const char format[] = "1234567890.3542289L = %.12Lf %.12Le";
+    long double n = 1234567890.3542289L;
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n, n);
+    s21_sprintf(str2, format, n, n);
+    ck_assert_str_eq(str1, str2);
+
+// большое число с округлением целой части
+#test e_spec_big_4
+    const char format[] = "1234567890.3542289L = %.8Lf %.8Le";
+    long double n = 1234567890.3542289L;
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n, n);
+    s21_sprintf(str2, format, n, n);
+    ck_assert_str_eq(str1, str2);
+
+// большое число с округлением целой части c увеличением порядка числа
+#test e_spec_big_5
+    const char format[] = "99999999L = %.7Lf %.7Le";
+    long double n = 99999999L;
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n, n);
+    s21_sprintf(str2, format, n, n);
+    ck_assert_str_eq(str1, str2);
+
+// большое число с округлением дробной части
+#test e_spec_big_6
+    const char format[] = "1234567890.3542289L = %.14Lf %.14Le";
+    long double n = 1234567890.3542289L;
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n, n);
+    s21_sprintf(str2, format, n, n);
+    ck_assert_str_eq(str1, str2);
+
+// маленькое число с нулями в начале дробной части число без заданной точности
+#test e_spec_small_with_zeroes_1
+    const char format[] = "0.001234311L = %Lf %Le";
+    long double n = 0.001234311L;
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n, n);
+    s21_sprintf(str2, format, n, n);
+    ck_assert_str_eq(str1, str2);
+
+// маленькое число с нулями в начале дробной части с маленькой точностью
+#test e_spec_small_with_zeroes_2
+    const char format[] = "0.001234311L = %.4Lf %.4Le";
+    long double n = 0.001234311L;
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n, n);
+    s21_sprintf(str2, format, n, n);
+    ck_assert_str_eq(str1, str2);
+
+// маленькое число с нулями в начале дробной части с большой точностью
+#test e_spec_small_with_zeroes_3
+    const char format[] = "0.001234311987654321L = %.11Lf %.11LE";
+    long double n = 0.001234311987654321L;
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n, n);
+    s21_sprintf(str2, format, n, n);
+    ck_assert_str_eq(str1, str2);
+
+// маленькое число с нулями в начале дробной части с округлением
+#test e_spec_small_with_zeroes_4
+    const char format[] = "0.001234311987654321L = %Lf %LE";
+    long double n = 0.001234311987654321L;
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n, n);
+    s21_sprintf(str2, format, n, n);
+    ck_assert_str_eq(str1, str2);
+
+// маленькое число с нулями в начале дробной части с округлением
+#test e_spec_small_with_zeroes_5
+    const char format[] = "0.001234311987654321L = %.9Lf %.9Le";
+    long double n = 0.001234311987654321L;
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n, n);
+    s21_sprintf(str2, format, n, n);
+    ck_assert_str_eq(str1, str2);
+
+// нуль без заданной точности
+#test e_spec_zero_1
+    const char format[] = "0.0L = %Lf %Le";
+    long double n = 0.0L;
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n, n);
+    s21_sprintf(str2, format, n, n);
+    ck_assert_str_eq(str1, str2);
+
+// нуль с заданной точностью
+#test e_spec_zero_2
+    const char format[] = "0.0L = %.8Lf %.8Le";
+    long double n = 0.0L;
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n, n);
+    s21_sprintf(str2, format, n, n);
+    ck_assert_str_eq(str1, str2);
+
+// округление в дробной части
+#test e_spec_rounding_1
+    const char format[] = "0.009999989L = %.4Lf %.4Le";
+    long double n = 0.009999989L;
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n, n);
+    s21_sprintf(str2, format, n, n);
+    ck_assert_str_eq(str1, str2);
+
+// без округления
+#test e_spec_rounding_2
+    const char format[] = "0.009999989L = %Lf %Le";
+    long double n = 0.009999989L;
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n, n);
+    s21_sprintf(str2, format, n, n);
+    ck_assert_str_eq(str1, str2);
+
+// округление, затрагивающее целую часть
+#test e_spec_rounding_3
+    const char format[] = "0.999999999L = %.7Lf %.7Le";
+    long double n = 0.999999999L;
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n, n);
+    s21_sprintf(str2, format, n, n);
+    ck_assert_str_eq(str1, str2);
+
+// маленькое число без заданной точности
+#test e_spec_small_1
+    const char format[] = "0.1234567654321L = %Lf %LE";
+    long double n = 0.1234567654321L;
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n, n);
+    s21_sprintf(str2, format, n, n);
+    ck_assert_str_eq(str1, str2);
+
+// маленькое число с маленькой точностью
+#test e_spec_small_2
+    const char format[] = "0.1234567654321L = %.2Lf %.2Le";
+    long double n = 0.1234567654321L;
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n, n);
+    s21_sprintf(str2, format, n, n);
+    ck_assert_str_eq(str1, str2);
+
+// маленькое число с большой точностью
+#test e_spec_small_3
+    const char format[] = "0.1234567654321L = %.15Lf %.15Le";
+    long double n = 0.001234311987654321L;
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n, n);
+    s21_sprintf(str2, format, n, n);
+    ck_assert_str_eq(str1, str2);
+
+// маленькое число с округлением
+#test e_spec_small_4
+    const char format[] = "0.1234567654321L = %.5Lf %.5Le";
+    long double n = 0.1234567654321L;
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n, n);
+    s21_sprintf(str2, format, n, n);
+    ck_assert_str_eq(str1, str2);
+
+// маленькое число с округлением
+#test e_spec_small_5
+    const char format[] = "0.1234567654321L = %.7Lf %.7Le";
+    long double n = 0.1234567654321L;
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n, n);
+    s21_sprintf(str2, format, n, n);
+    ck_assert_str_eq(str1, str2);
+
+// маленькое число с округлением
+#test e_spec_small_6
+    const char format[] = "0.1234567654321L = %.5Lf %.5Le";
+    long double n = 0.1234567654321L;
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n, n);
+    s21_sprintf(str2, format, n, n);
+    ck_assert_str_eq(str1, str2);
+
+// очень маленькое число
+#test e_spec_very_small_1
+    const char format[] = "0.0000000000006L = %Lf %LE";
+    long double n = 0.0000000000006L;
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n, n);
+    s21_sprintf(str2, format, n, n);
+    ck_assert_str_eq(str1, str2);
+
+// очень маленькое число c маленькой точностью
+#test e_spec_very_small_2
+    const char format[] = "0.00000000012345678L = %.2Lf %.2Le";
+    long double n = 0.00000000012345678L;
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n, n);
+    s21_sprintf(str2, format, n, n);
+    ck_assert_str_eq(str1, str2);
+
+// очень маленькое число c большой точностью
+#test e_spec_very_small_3
+    const char format[] = "0.00000000012345678L = %.10Lf %.10Le";
+    long double n = 0.00000000012345678L;
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n, n);
+    s21_sprintf(str2, format, n, n);
+    ck_assert_str_eq(str1, str2);
+
+// очень маленькое число c округлением
+#test e_spec_very_small_4
+    const char format[] = "0.00000000012345678L = %.5Lf %.5Le";
+    long double n = 0.00000000012345678L;
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n, n);
+    s21_sprintf(str2, format, n, n);
+    ck_assert_str_eq(str1, str2);
+
+// очень-очень маленькое число
+#test e_spec_very_small_5
+    const char format[] = "0.0000000000000000002112L = %Lf %LE";
+    long double n = 0.0000000000000000002112L;
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n, n);
+    s21_sprintf(str2, format, n, n);
+    ck_assert_str_eq(str1, str2);
+
+#test notation
+    const char format[] = "number = %o %p %x %X";
+    int data_set[] = {15, -15, 0, 1, -1, 8, -8, 16, -16, 7, -7, 11259375, -11259375};
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+
+    int qty = sizeof(data_set) / sizeof(data_set[0]);
+    for (int i = 0; i < qty; i++) {
+        sprintf(str1, format, data_set[i], &data_set[i], data_set[i], data_set[i]);
+        s21_sprintf(str2, format, data_set[i], &data_set[i], data_set[i], data_set[i]);
+        ck_assert_str_eq(str1, str2);
+    }
+
+    const char format_hash[] = "number = %#o %#x %#X";
+    for (int i = 0; i < qty; i++) {
+        sprintf(str1, format_hash, data_set[i], data_set[i], data_set[i]);
+        s21_sprintf(str2, format_hash, data_set[i], data_set[i], data_set[i]);
+        ck_assert_str_eq(str1, str2);
+    }
+
+    const char format_width[] = "number = %10o %20p %10x %10X";
+    for (int i = 0; i < qty; i++) {
+        sprintf(str1, format_width, data_set[i], &data_set[i], data_set[i], data_set[i]);
+        s21_sprintf(str2, format_width, data_set[i], &data_set[i], data_set[i], data_set[i]);
+        ck_assert_str_eq(str1, str2);
+    }
+
+#test notation2
+    const char format[] = "number = %020o %020x %020X";
+    int data_set[] = {15, -15, 0, 1, -1, 8, -8, 16, -16, 7, -7, 11259375, -11259375};
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+
+    int qty = sizeof(data_set) / sizeof(data_set[0]);
+
+    for (int i = 0; i < qty; i++) {
+        s21_size_t len1 = sprintf(str1, format, data_set[i],  data_set[i], data_set[i]);
+        s21_size_t len2 = s21_sprintf(str2, format, data_set[i], data_set[i], data_set[i]);
+        ck_assert_str_eq(str1, str2);
+        ck_assert_int_eq(len1, len2);
+    }
+
+// ##################################################################### //
+// ---------------------------- s21_d_spec ----------------------------- //
+// ##################################################################### //
+
+//Простые случаи
+#test d_specifier_1
+    char buffer1[100] = {0};
+    char buffer2[100] = {0};
+    int len1, len2;
+    len1 = sprintf(buffer1, "%d", 12345);
+    len2 = s21_sprintf(buffer2, "%d", 12345);
+    ck_assert_str_eq(buffer1, buffer2);
+    ck_assert_int_eq(len1, len2);
+
+#test d_specifier_1_1
+    char buffer1[100] = {0};
+    char buffer2[100] = {0};
+    int len1, len2;
+    len1 = sprintf(buffer1, "%.37d", 123);
+    len2 = s21_sprintf(buffer2, "%.37d", 123);
+    ck_assert_str_eq(buffer1, buffer2);
+    ck_assert_int_eq(len1, len2);
+
+#test d_specifier_2
+    char buffer1[100] = {0};
+    char buffer2[100] = {0};
+    int len1, len2;
+    len1 = sprintf(buffer1, "%%My phone number%% %d", 12345);
+    len2 = s21_sprintf(buffer2, "%%My phone number%% %d", 12345);
+    ck_assert_str_eq(buffer1, buffer2);
+    ck_assert_int_eq(len1, len2);
+    
+// Отрицательные числа
+#test d_specifier_3
+    char buffer1[100] = {0};
+    char buffer2[100] = {0};
+    int len1, len2;
+    len1 = sprintf(buffer1, "%d", -12345);
+    len2 = s21_sprintf(buffer2, "%d", -12345);
+    ck_assert_str_eq(buffer1, buffer2);
+    ck_assert_int_eq(len1, len2);
+    
+// С флагом +
+#test d_specifier_4
+    char buffer1[100] = {0};
+    char buffer2[100] = {0};
+    int len1, len2;
+    len1 = sprintf(buffer1, "My phone number: %+d", 7999);
+    len2 = s21_sprintf(buffer2, "My phone number: %+d", 7999);
+    ck_assert_str_eq(buffer1, buffer2);
+    ck_assert_int_eq(len1, len2);
+    
+// С width и precision
+#test d_specifier_5
+    char buffer1[100] = {0};
+    char buffer2[100] = {0};
+    int len1, len2;
+    len1 = sprintf(buffer1, "%10.5d", 42);
+    len2 = s21_sprintf(buffer2, "%10.5d", 42);
+    ck_assert_str_eq(buffer1, buffer2);
+    ck_assert_int_eq(len1, len2);
+
+#test d_specifier_6
+    char buffer1[100] = {0};
+    char buffer2[100] = {0};
+    int len1, len2;
+    len1 = sprintf(buffer1, "mama%% %*.*d", -50, 10, 5);
+    len2 = s21_sprintf(buffer2, "mama%% %*.*d", -50, 10, 5);
+    ck_assert_str_eq(buffer1, buffer2);
+    ck_assert_int_eq(len1, len2);
+
+#test d_specifier_7
+    char buffer1[100] = {0};
+    char buffer2[100] = {0};
+    int len1, len2;
+    len1 = sprintf(buffer1, "papa%% %*.*d", 50, 10, 5);
+    len2 = s21_sprintf(buffer2, "papa%% %*.*d", 50, 10, 5);
+    ck_assert_str_eq(buffer1, buffer2);
+    ck_assert_int_eq(len1, len2);
+
+// С нулем
+#test d_specifier_8
+    char buffer1[100] = {0};
+    char buffer2[100] = {0};
+    int len1, len2;
+    len1 = sprintf(buffer1, "papa%% %*.*d", 50, 10, 0);
+    len2 = s21_sprintf(buffer2, "papa%% %*.*d", 50, 10, 0);
+    ck_assert_str_eq(buffer1, buffer2);
+    ck_assert_int_eq(len1, len2);
+
+#test d_specifier_9
+    char buffer1[100] = {0};
+    char buffer2[100] = {0};
+    int len1, len2;
+    len1 = sprintf(buffer1, "papa%% %*.*d", 50, 10, -0);
+    len2 = s21_sprintf(buffer2, "papa%% %*.*d", 50, 10, -0);
+    ck_assert_str_eq(buffer1, buffer2);
+    ck_assert_int_eq(len1, len2);
+
+// Длина
+#test d_specifier_10
+    char buffer1[100] = {0};
+    char buffer2[100] = {0};
+    int len1, len2;
+    long n = 1000000000000000000;
+    len1 = sprintf(buffer1, "%%%ld", n);
+    len2 = s21_sprintf(buffer2, "%%%ld", n);
+    ck_assert_str_eq(buffer1, buffer2);
+    ck_assert_int_eq(len1, len2);
+
+#test d_specifier_11
+    char buffer1[100] = {0};
+    char buffer2[100] = {0};
+    int len1, len2;
+    short n = 1;
+    len1 = sprintf(buffer1, "%%%%%hd", n);
+    len2 = s21_sprintf(buffer2, "%%%%%hd", n);
+    ck_assert_str_eq(buffer1, buffer2);
+    ck_assert_int_eq(len1, len2);
+
+#test d_specifier_12
+    char buffer1[100] = {0};
+    char buffer2[100] = {0};
+    int len1, len2;
+    long n = 13;
+    len1 = sprintf(buffer1, "Hello %-50.*ld world", 20, n);
+    len2 = s21_sprintf(buffer2, "Hello %-50.*ld world", 20, n);
+    ck_assert_str_eq(buffer1, buffer2);
+    ck_assert_int_eq(len1, len2);
+
+//Разные
+#test d_specifier_13
+    char buffer1[100] = {0};
+    char buffer2[100] = {0};
+    int len1, len2;
+    len1 = sprintf(buffer1, "% d", -20);
+    len2 = s21_sprintf(buffer2, "% d", -20);
+    ck_assert_str_eq(buffer1, buffer2);
+    ck_assert_int_eq(len1, len2);
+
+#test d_specifier_14
+    char buffer1[100] = {0};
+    char buffer2[100] = {0};
+    int len1, len2;
+    len1 = sprintf(buffer1, "%+d", 20);
+    len2 = s21_sprintf(buffer2, "%+d", 20);
+    ck_assert_str_eq(buffer1, buffer2);
+    ck_assert_int_eq(len1, len2);
+
+#test d_specifier_15
+    char buffer1[100] = {0};
+    char buffer2[100] = {0};
+    int len1, len2;
+    len1 = sprintf(buffer1, "% 0d", -20);
+    len2 = s21_sprintf(buffer2, "%+d", -20);
+    ck_assert_str_eq(buffer1, buffer2);
+    ck_assert_int_eq(len1, len2);
+
+#test d_specifier_16
+    char buffer1[100] = {0};
+    char buffer2[100] = {0};
+    int len1, len2;
+    len1 = sprintf(buffer1, "%+020d", 2);
+    len2 = s21_sprintf(buffer2, "%+020d", 2);
+    ck_assert_str_eq(buffer1, buffer2);
+    ck_assert_int_eq(len1, len2);
+
+#test d_specifier_17
+    char buffer1[100] = {0};
+    char buffer2[100] = {0};
+    int len1, len2;
+    len1 = sprintf(buffer1, "%+20.10d", 2);
+    len2 = s21_sprintf(buffer2, "%+20.10d", 2);
+    ck_assert_str_eq(buffer1, buffer2);
+    ck_assert_int_eq(len1, len2);
+
+// ##################################################################### //
+// ---------------------------- s21_c_spec ----------------------------- //
+// ##################################################################### //
+
+// Простые символы
+#test c_specifier_1
+    char buffer1[100] = {0};
+    char buffer2[100] = {0};
+    int len1, len2;
+    len1 = sprintf(buffer1, "Hello %c", 'W');
+    len2 = s21_sprintf(buffer2, "Hello %c", 'W');
+    ck_assert_str_eq(buffer1, buffer2);
+    ck_assert_int_eq(len1, len2);
+
+// Специальные символы
+#test c_specifier_2
+    char buffer1[100] = {0};
+    char buffer2[100] = {0};
+    int len1, len2;
+    len1 = sprintf(buffer1, "Hello %c W", '\n');
+    len2 = s21_sprintf(buffer2, "Hello %c W", '\n');
+    ck_assert_str_eq(buffer1, buffer2);
+    ck_assert_int_eq(len1, len2);
+
+#test c_specifier_3
+    char buffer1[100] = {0};
+    char buffer2[100] = {0};
+    int len1, len2;
+    len1 = sprintf(buffer1, "Hello %c W", '\t');
+    len2 = s21_sprintf(buffer2, "Hello %lc W", '\t');
+    ck_assert_str_eq(buffer1, buffer2);
+    ck_assert_int_eq(len1, len2);
+
+#test c_specifier_4
+    char buffer1[100] = {0};
+    char buffer2[100] = {0};
+    int len1, len2;
+    len1 = sprintf(buffer1, "Hello %c W", 32);
+    len2 = s21_sprintf(buffer2, "Hello %c W", 32);
+    ck_assert_str_eq(buffer1, buffer2);
+    ck_assert_int_eq(len1, len2);
+
+#test c_specifier_5
+    char buffer1[100] = {0};
+    char buffer2[100] = {0};
+    int len1, len2;
+    len1 = sprintf(buffer1, "Hello %c W", 0);
+    len2 = s21_sprintf(buffer2, "Hello %c W", 0);
+    ck_assert_str_eq(buffer1, buffer2);
+    ck_assert_int_eq(len1, len2);
+
+#test c_specifier_5_1
+    char buffer1[100] = {0};
+    char buffer2[100] = {0};
+    int len1, len2;
+    len1 = sprintf(buffer1, "Hello %10c W", 0);
+    len2 = s21_sprintf(buffer2, "Hello %10c W", 0);
+    ck_assert_str_eq(buffer1, buffer2);
+    ck_assert_int_eq(len1, len2);
+
+#test c_specifier_5_2
+    char buffer1[100] = {0};
+    char buffer2[100] = {0};
+    int len1, len2;
+    len1 = sprintf(buffer1, "Hello %-10c W", 0);
+    len2 = s21_sprintf(buffer2, "Hello %-10c W", 0);
+    ck_assert_str_eq(buffer1, buffer2);
+    ck_assert_int_eq(len1, len2);
+
+#test c_specifier_6
+    char buffer1[100] = {0};
+    char buffer2[100] = {0};
+    int len1, len2;
+    len1 = sprintf(buffer1, "Hello %c W", 0);
+    len2 = s21_sprintf(buffer2, "Hello %c W", 0);
+    ck_assert_str_eq(buffer1, buffer2);
+    ck_assert_int_eq(len1, len2);
+
+// С шириной
+#test c_specifier_7
+    char buffer1[100] = {0};
+    char buffer2[100] = {0};
+    int len1, len2;
+    len1 = sprintf(buffer1, "Hello %5corld", 'W');
+    len2 = s21_sprintf(buffer2, "Hello %5corld", 'W');
+    ck_assert_str_eq(buffer1, buffer2);
+    ck_assert_int_eq(len1, len2);
+
+// С флагом -
+#test c_specifier_8
+    char buffer1[100] = {0};
+    char buffer2[100] = {0};
+    int len1, len2;
+    len1 = sprintf(buffer1, "Hello %-50corld", 'W');
+    len2 = s21_sprintf(buffer2, "Hello %-50corld", 'W');
+    ck_assert_str_eq(buffer1, buffer2);
+    ck_assert_int_eq(len1, len2);
+
+#test c_specifier_9
+    char buffer1[100] = {0};
+    char buffer2[100] = {0};
+    int len1, len2;
+    len1 = sprintf(buffer1, "Hello %*corld", -50, 'W');
+    len2 = s21_sprintf(buffer2, "Hello %*corld", -50, 'W');
+    ck_assert_str_eq(buffer1, buffer2);
+    ck_assert_int_eq(len1, len2);
+
+#test c_specifier_10
+    char buffer1[100] = {0};
+    char buffer2[100] = {0};
+    int len1, len2;
+    len1 = sprintf(buffer1, "Hello %-*cWorld", 50, '\n');
+    len2 = s21_sprintf(buffer2, "Hello %-*cWorld", 50, '\n');
+    ck_assert_str_eq(buffer1, buffer2);
+    ck_assert_int_eq(len1, len2);
+
+// Нуль-терминатор строки
+#test c_specifier_11
+    char buffer1[100] = {0};
+    char buffer2[100] = {0};
+    int len1, len2;
+    len1 = sprintf(buffer1, "%cMama", '\0');
+    len2 = s21_sprintf(buffer2, "%cMama", '\0');
+    ck_assert_str_eq(buffer1, buffer2);
+    ck_assert_int_eq(len1, len2);
+
+#test c_specifier_12
+    char buffer1[100] = {0};
+    char buffer2[100] = {0};
+    int len1, len2;
+    len1 = sprintf(buffer1, "Mama%cMama", '\0');
+    len2 = s21_sprintf(buffer2, "Mama%cMama", '\0');
+    ck_assert_str_eq(buffer1, buffer2);
+    ck_assert_int_eq(len1, len2);
+
+// ##################################################################### //
+// ---------------------------- s21_u_spec ----------------------------- //
+// ##################################################################### //
+
+// Простые случаи
+#test u_specifier_1
+	char buffer1[100] = {0};
+	char buffer2[100] = {0};
+	int len1, len2;
+	len1 = sprintf(buffer1, "%u", 123);
+	len2 = s21_sprintf(buffer2, "%u", 123);
+	ck_assert_str_eq(buffer1, buffer2);
+	ck_assert_int_eq(len1, len2);
+
+// Отрицательные числа
+#test u_specifier_2
+	char buffer1[100] = {0};
+	char buffer2[100] = {0};
+	int len1, len2;
+	unsigned int n = -123;
+	len1 = sprintf(buffer1, "%u", n);
+	len2 = s21_sprintf(buffer2, "%u", n);
+	ck_assert_str_eq(buffer1, buffer2);
+	ck_assert_int_eq(len1, len2);
+
+// Большие числа
+#test u_specifier_3
+	char buffer1[100] = {0};
+	char buffer2[100] = {0};
+	int len1, len2;
+	unsigned int n = 4294967295;
+	len1 = sprintf(buffer1, "%u", n);
+	len2 = s21_sprintf(buffer2, "%u", n);
+	ck_assert_str_eq(buffer1, buffer2);
+	ck_assert_int_eq(len1, len2);
+
+// С нулем
+#test u_specifier_4
+	char buffer1[100] = {0};
+	char buffer2[100] = {0};
+	int len1, len2;
+	len1 = sprintf(buffer1, "%u", 0);
+	len2 = s21_sprintf(buffer2, "%u", 0);
+	ck_assert_str_eq(buffer1, buffer2);
+	ck_assert_int_eq(len1, len2);
+
+#test u_specifier_5
+	char buffer1[100] = {0};
+	char buffer2[100] = {0};
+	int len1, len2;
+	len1 = sprintf(buffer1, "%u", -0);
+	len2 = s21_sprintf(buffer2, "%u", -0);
+	ck_assert_str_eq(buffer1, buffer2);
+	ck_assert_int_eq(len1, len2);
+
+// Флаги, ширина, точность
+#test u_specifier_51
+	char buffer1[100] = {0};
+	char buffer2[100] = {0};
+	int len1, len2;
+	len1 = sprintf(buffer1, "%20.5u", 10);
+	len2 = s21_sprintf(buffer2, "%20.5u", 10);
+	ck_assert_str_eq(buffer1, buffer2);
+	ck_assert_int_eq(len1, len2);
+
+#test u_specifier_52
+	char buffer1[100] = {0};
+	char buffer2[100] = {0};
+	int len1, len2;
+	len1 = sprintf(buffer1, "%-20.5u", 10);
+	len2 = s21_sprintf(buffer2, "%-20.5u", 10);
+	ck_assert_str_eq(buffer1, buffer2);
+	ck_assert_int_eq(len1, len2);
+
+#test u_specifier_6
+	char buffer1[100] = {0};
+	char buffer2[100] = {0};
+	int len1, len2;
+	len1 = sprintf(buffer1, "%*.5u", -20, 10);
+	len2 = s21_sprintf(buffer2, "%*.5u", -20, 10);
+	ck_assert_str_eq(buffer1, buffer2);
+	ck_assert_int_eq(len1, len2);
+
+#test u_specifier_7
+	char buffer1[100] = {0};
+	char buffer2[100] = {0};
+	int len1, len2;
+	len1 = sprintf(buffer1, "%-*.5u", -20, 10);
+	len2 = s21_sprintf(buffer2, "%-*.5u", -20, 10);
+	ck_assert_str_eq(buffer1, buffer2);
+	ck_assert_int_eq(len1, len2);
+
+#test u_specifier_8
+	char buffer1[100] = {0};
+	char buffer2[100] = {0};
+	int len1, len2;
+	len1 = sprintf(buffer1, "%-*.5u", 20, 10);
+	len2 = s21_sprintf(buffer2, "%-*.5u", 20, 10);
+	ck_assert_str_eq(buffer1, buffer2);
+	ck_assert_int_eq(len1, len2);
+
+#test u_specifier_9
+	char buffer1[100] = {0};
+	char buffer2[100] = {0};
+	int len1, len2;
+	len1 = sprintf(buffer1, "%-*.*u", 20, 5, 10);
+	len2 = s21_sprintf(buffer2, "%-*.*u", 20, 5, 10);
+	ck_assert_str_eq(buffer1, buffer2);
+	ck_assert_int_eq(len1, len2);
+
+// Длина
+#test u_specifier_10
+	char buffer1[100] = {0};
+	char buffer2[100] = {0};
+	int len1, len2;
+	len1 = sprintf(buffer1, "%hu", 11);
+	len2 = s21_sprintf(buffer2, "%hu", 11);
+	ck_assert_str_eq(buffer1, buffer2);
+	ck_assert_int_eq(len1, len2);
+
+#test u_specifier_11
+	char buffer1[100] = {0};
+	char buffer2[100] = {0};
+	int len1, len2;
+	long unsigned int n = 1111111111111111111;
+	len1 = sprintf(buffer1, "%lu", n);
+	len2 = s21_sprintf(buffer2, "%lu", n);
+	ck_assert_str_eq(buffer1, buffer2);
+	ck_assert_int_eq(len1, len2);
+
+
+
+
+// ##################################################################### //
+// ---------------------------- s21_s_spec ----------------------------- //
+// ##################################################################### //
+
+// Простые строки
+#test s_specifier_1
+char buffer1[100] = {0};
+char buffer2[100] = {0};
+int len1, len2;
+len1 = sprintf(buffer1, "%s", "hello");
+len2 = s21_sprintf(buffer2, "%s", "hello");
+ck_assert_str_eq(buffer1, buffer2);
+ck_assert_int_eq(len1, len2);
+
+#test s_specifier_1null
+char buffer1[100] = {0};
+char buffer2[100] = {0};
+int len1, len2;
+const char format[] = "not a string |%s|";
+len1 = sprintf(buffer1, format, (char*)NULL);
+len2 = s21_sprintf(buffer2, format, (char*)NULL);
+ck_assert_str_eq(buffer1, buffer2);
+ck_assert_int_eq(len1, len2);
+
+#test s_specifier_2
+char buffer1[100] = {0};
+char buffer2[100] = {0};
+int len1, len2;
+len1 = sprintf(buffer1, "%s", "");
+len2 = s21_sprintf(buffer2, "%s", "");
+ck_assert_str_eq(buffer1, buffer2);
+ck_assert_int_eq(len1, len2);
+
+
+// С шириной
+#test s_specifier_5
+char buffer1[100] = {0};
+char buffer2[100] = {0};
+int len1, len2;
+len1 = sprintf(buffer1, "%10s", "hello");
+len2 = s21_sprintf(buffer2, "%10s", "hello");
+ck_assert_str_eq(buffer1, buffer2);
+ck_assert_int_eq(len1, len2);
+ 
+#test s_specifier_6
+char buffer1[100] = {0};
+char buffer2[100] = {0};
+int len1, len2;
+len1 = sprintf(buffer1, "%-10s", "hello");
+len2 = s21_sprintf(buffer2, "%-10s", "hello");
+ck_assert_str_eq(buffer1, buffer2);
+ck_assert_int_eq(len1, len2);
+
+#test s_specifier_7
+char buffer1[100] = {0};
+char buffer2[100] = {0};
+int len1, len2;
+len1 = sprintf(buffer1, "%3s", "hello");
+len2 = s21_sprintf(buffer2, "%3s", "hello");
+ck_assert_str_eq(buffer1, buffer2);
+ck_assert_int_eq(len1, len2);
+
+// С точностью
+#test s_specifier_8
+char buffer1[100] = {0};
+char buffer2[100] = {0};
+int len1, len2;
+len1 = sprintf(buffer1, "%.2s", "Hello, world!");
+len2 = s21_sprintf(buffer2, "%.2s", "Hello, world!");
+ck_assert_str_eq(buffer1, buffer2);
+ck_assert_int_eq(len1, len2);
+ 
+#test s_specifier_9
+char buffer1[100] = {0};
+char buffer2[100] = {0};
+int len1, len2;
+len1 = sprintf(buffer1, "%.0s", "Hello, world!");
+len2 = s21_sprintf(buffer2, "%.0s", "Hello, world!");
+ck_assert_str_eq(buffer1, buffer2);
+ck_assert_int_eq(len1, len2);
+
+#test s_specifier_10
+char buffer1[100] = {0};
+char buffer2[100] = {0};
+int len1, len2;
+len1 = sprintf(buffer1, "%.20s", "Hello, world!");
+len2 = s21_sprintf(buffer2, "%.20s", "Hello, world!");
+ck_assert_str_eq(buffer1, buffer2);
+ck_assert_int_eq(len1, len2);
+
+// С шириной и точностью
+#test s_specifier_11
+char buffer1[100] = {0};
+char buffer2[100] = {0};
+int len1, len2;
+len1 = sprintf(buffer1, "%10.3s", "Hello, world!");
+len2 = s21_sprintf(buffer2, "%10.3s", "Hello, world!");
+ck_assert_str_eq(buffer1, buffer2);
+ck_assert_int_eq(len1, len2);
+
+#test s_specifier_12
+char buffer1[100] = {0};
+char buffer2[100] = {0};
+int len1, len2;
+len1 = sprintf(buffer1, "%*.*s", 10, 3, "Hello, world!");
+len2 = s21_sprintf(buffer2, "%*.*s", 10, 3, "Hello, world!");
+ck_assert_str_eq(buffer1, buffer2);
+ck_assert_int_eq(len1, len2);
+
+#test s_specifier_13
+char buffer1[100] = {0};
+char buffer2[100] = {0};
+int len1, len2;
+len1 = sprintf(buffer1, "%*.*s", -10, 3, "Hello, world!");
+len2 = s21_sprintf(buffer2, "%*.*s", -10, 3, "Hello, world!");
+ck_assert_str_eq(buffer1, buffer2);
+ck_assert_int_eq(len1, len2);
+
+// Строка с \0 внутри и спец. символы
+#test s_specifier_14
+char buffer1[100] = {0};
+char buffer2[100] = {0};
+int len1, len2;
+len1 = sprintf(buffer1, "%s", "Hello\0, world!");
+len2 = s21_sprintf(buffer2, "%s", "Hello\0, world!");
+ck_assert_str_eq(buffer1, buffer2);
+ck_assert_int_eq(len1, len2);
+
+#test s_specifier_15
+char buffer1[100] = {0};
+char buffer2[100] = {0};
+int len1, len2;
+len1 = sprintf(buffer1, "%s", "\t\n\r");
+len2 = s21_sprintf(buffer2, "%s", "\t\n\r");
+ck_assert_str_eq(buffer1, buffer2);
+ck_assert_int_eq(len1, len2);
+
+#test s_specifier_16
+char buf1[100] = {0}, buf2[100] = {0};
+char str[] = "Hello world\0";
+int len1, len2;
+len1 = sprintf(buf1, "%s", str);
+len2 = s21_sprintf(buf2, "%s", str);
+ck_assert_str_eq(buf1, buf2);
+ck_assert_int_eq(len1, len2);
+
+#test s_specifier_17
+char buf1[100] = {0}, buf2[100] = {0};
+char str[] = "Hello world\n\0";
+int len1, len2;
+len1 = sprintf(buf1, "%s", str);
+len2 = s21_sprintf(buf2, "%s", str);
+ck_assert_str_eq(buf1, buf2);
+ck_assert_int_eq(len1, len2);
+
+#test s_specifier_18
+char buf1[100] = {0}, buf2[100] = {0};
+char str[] = "a\n\0";
+int len1, len2;
+len1 = sprintf(buf1, "%s", str);
+len2 = s21_sprintf(buf2, "%s", str);
+ck_assert_str_eq(buf1, buf2);
+ck_assert_int_eq(len1, len2);
+
+#test s_specifier_19
+char buf1[100] = {0}, buf2[100] = {0};
+char str[] = " \n\0";
+int len1, len2;
+len1 = sprintf(buf1, "%s", str);
+len2 = s21_sprintf(buf2, "%s", str);
+ck_assert_str_eq(buf1, buf2);
+ck_assert_int_eq(len1, len2);
+
+#test s_specifier_20
+char buf1[100] = {0}, buf2[100] = {0};
+char str[] = " \0";
+int len1, len2;
+len1 = sprintf(buf1, "%s", str);
+len2 = s21_sprintf(buf2, "%s", str);
+ck_assert_str_eq(buf1, buf2);
+ck_assert_int_eq(len1, len2);
+
+#test s_specifier_21
+char buf1[100] = {0}, buf2[100] = {0};
+char str[] = "\n\0";
+int len1, len2;
+len1 = sprintf(buf1, "%s", str);
+len2 = s21_sprintf(buf2, "%s", str);
+ck_assert_str_eq(buf1, buf2);
+ck_assert_int_eq(len1, len2);
+
+
+#test s_specifier_22
+char buf1[100] = {0}, buf2[100] = {0};
+char str[] = "\0";
+int len1, len2;
+len1 = sprintf(buf1, "%s", str);
+len2 = s21_sprintf(buf2, "%s", str);
+ck_assert_str_eq(buf1, buf2);
+ck_assert_int_eq(len1, len2);
+
+
+// Несколько спецификаторов 
+#test s_specifier_23
+char buf1[100] = {0}, buf2[100] = {0};
+int len1 = sprintf(buf1, "Test: %s %s", "hello", "world");
+int len2 = s21_sprintf(buf2, "Test: %s %s", "hello", "world");
+ck_assert_str_eq(buf1, buf2);
+ck_assert_int_eq(len1, len2);
+
+
+
+
+// ##################################################################### //
+// ---------------------------- s21_g_spec ----------------------------- //
+// ##################################################################### //
+// очень большое число без заданной точности
+#test g_spec_big_1
+    const char format[] = "123456789056.3542289L = %Lf %Le %Lg";
+    long double n = 123456789056.3542289L;
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n, n, n);
+    s21_sprintf(str2, format, n, n, n);
+    ck_assert_str_eq(str1, str2);
+
+// очень большое число c заданной точностью
+#test g_spec_big_2
+    const char format[] = "123456789056.3542289L = %.4Lf %.4Le %.4Lg";
+    long double n = 123456789056.3542289L;
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n, n, n);
+    s21_sprintf(str2, format, n, n, n);
+    ck_assert_str_eq(str1, str2);
+
+// обычное число с экспонентой меньше заданной точности
+#test g_spec_middle_1
+    const char format[] = "1234.3542289L = %.5Lf %.5Le %.5LG";
+    long double n = 1234.3542289L;
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n, n, n);
+    s21_sprintf(str2, format, n, n, n);
+    ck_assert_str_eq(str1, str2);
+
+// обычное число с экспонентой меньше заданной точности
+#test g_spec_middle_2
+    const char format[] = "1999.3742219L = %.5Lf %.5Le %.5LG";
+    long double n = 1999.3742219L;
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n, n, n);
+    s21_sprintf(str2, format, n, n, n);
+    ck_assert_str_eq(str1, str2);
+
+// ноль
+#test g_spec_zero_1
+    const char format[] = "0.00 = %.5f %.5e %.5g";
+    double n = 0.00;
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n, n, n);
+    s21_sprintf(str2, format, n, n, n);
+    ck_assert_str_eq(str1, str2);
+
+// ноль
+#test g_spec_zero_2
+    const char format[] = "0.00 = %f %e %G";
+    double n = 0.00;
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n, n, n);
+    s21_sprintf(str2, format, n, n, n);
+    ck_assert_str_eq(str1, str2);
+
+// отрицательное число с небольшой отрицательной экспонентой
+#test g_spec_negative_1
+    const char format[] = "-0.003542289L = %.5Lf %.5Le %.5LG";
+    long double n = -0.003542289L;
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n, n, n);
+    s21_sprintf(str2, format, n, n, n);
+    ck_assert_str_eq(str1, str2);
+
+// отрицательное число с небольшой отрицательной экспонентой
+#test g_spec_negative_2
+    const char format[] = "-0.003542289L = %Lf %Le %LG";
+    long double n = -0.003542289L;
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n, n, n);
+    s21_sprintf(str2, format, n, n, n);
+    ck_assert_str_eq(str1, str2);
+
+// отрицательное число с небольшой отрицательной экспонентой
+#test g_spec_negative_3
+    const char format[] = "-0.003542289L = %.5Lf %.5Le %.5LG";
+    long double n = -0.003542289L;
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n, n, n);
+    s21_sprintf(str2, format, n, n, n);
+    ck_assert_str_eq(str1, str2);
+
+// отрицательное число с экспонентой = -4
+#test g_spec_negative_4
+    const char format[] = "-0.0003542289L = %Lf %Le %LG";
+    long double n = -0.0003542289L;
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n, n, n);
+    s21_sprintf(str2, format, n, n, n);
+    ck_assert_str_eq(str1, str2);
+
+// отрицательное число с большой отрицательной экспонентой
+#test g_spec_negative_5
+    const char format[] = "-0.0000000067889L = %Lf %Le %LG";
+    long double n = -0.0000000067889L;
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n, n, n);
+    s21_sprintf(str2, format, n, n, n);
+    ck_assert_str_eq(str1, str2);
+
+
+// все feg-спецификаторы с форматами
+#test allf_spec_format_1
+    const char format[] = "-0.0010067889L = %20.3Lf %20.3Le %20.3Lg";
+    long double n = -0.0010067889L;
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n, n, n);
+    s21_sprintf(str2, format, n, n, n);
+    ck_assert_str_eq(str1, str2);
+
+// все feg-спецификаторы с форматами
+#test allf_spec_format_2
+    const char format[] = "-0.0010067889L = %020.3Lf %020.3Le %020.3Lg";
+    long double n = -0.0010067889L;
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n, n, n);
+    s21_sprintf(str2, format, n, n, n);
+    ck_assert_str_eq(str1, str2);
+
+// все feg-спецификаторы с форматами
+#test allf_spec_format_3
+    const char format[] = "-12.3910067889L = %20.3Lf %20.3Le %20.3Lg";
+    long double n = -12.3910067889L;
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n, n, n);
+    s21_sprintf(str2, format, n, n, n);
+    ck_assert_str_eq(str1, str2);
+
+// все feg-спецификаторы с форматами
+#test allf_spec_format_4
+    const char format[] = "12.3910067889L = %+20.3Lf %+20.3Le %+20.3Lg";
+    long double n = 12.3910067889L;
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n, n, n);
+    s21_sprintf(str2, format, n, n, n);
+    ck_assert_str_eq(str1, str2);
+
+// все feg-спецификаторы с форматами
+#test allf_spec_format_5
+    const char format[] = "12932.3910067889L = % 30.8Lf % 30.8Le % 30.8Lg";
+    long double n = 12932.3910067889L;
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n, n, n);
+    s21_sprintf(str2, format, n, n, n);
+    ck_assert_str_eq(str1, str2);
+
+// все feg-спецификаторы с форматами
+#test allf_spec_format_6
+    const char format[] = "12932.3910067889L = %-40.8Lf %-40.8Le %-40.8Lg";
+    long double n = 12932.3910067889L;
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n, n, n);
+    s21_sprintf(str2, format, n, n, n);
+    ck_assert_str_eq(str1, str2);
+
+// проверка экспоненциальной записи без хэша и с хэшем
+#test allf_spec_hash_1
+    const char format[] = "1230000000L = %.5Lf %.5Le %.5Lg %#.5LG";
+    long double n = 1230000000L;
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n, n, n, n);
+    s21_sprintf(str2, format, n, n, n, n);
+    ck_assert_str_eq(str1, str2);
+
+// проверка стандартной записи без хэша и с хэшем
+#test allf_spec_hash2
+    const char format[] = "1230.4567000L = %.5Lf %.5Le %.5Lg %#.5LG";
+    long double n = 1230.4567000L;
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n, n, n, n);
+    s21_sprintf(str2, format, n, n, n, n);
+    ck_assert_str_eq(str1, str2);
+
+// проверка стандартной записи без хэша и с хэшем
+#test allf_spec_hash3
+    const char format[] = "0.0456000L = %.5Lf %.5Le %.5Lg %#.5LG";
+    long double n = 0.0456000L;
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n, n, n, n);
+    s21_sprintf(str2, format, n, n, n, n);
+    ck_assert_str_eq(str1, str2);
+
+// проверка стандартной записи без хэша и с хэшем
+#test allf_spec_hash4
+    const char format[] = "0.0456000L = %.3Lf %.3Le %.3Lg %#.3LG";
+    long double n = 0.0456000L;
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n, n, n, n);
+    s21_sprintf(str2, format, n, n, n, n);
+    ck_assert_str_eq(str1, str2);
+
+// проверка стандартной записи без хэша и с хэшем
+#test allf_spec_hash5
+    const char format[] = "0.0000098688000L = %.7Lf %.7Le %.7Lg %#.7LG";
+    long double n = 0.0000098688000L;
+    char str1[200] = { 0 };
+    char str2[200] = { 0 };
+    sprintf(str1, format, n, n, n, n);
+    s21_sprintf(str2, format, n, n, n, n);
+    ck_assert_str_eq(str1, str2);
