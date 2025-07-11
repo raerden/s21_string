@@ -1037,6 +1037,19 @@ result = s21_strrchr(src, find);
 
 ck_assert_ptr_eq(result, expected);
 
+
+// Тест 5.1.
+#test strrchr_nul_symbol
+const char* src = "This is a\0test string, with punctuation! 123.";
+char *expected;
+char *result;
+
+const char find = 0;
+expected = strrchr(src, find); // Оригинальная функция
+result = s21_strrchr(src, find);
+
+ck_assert_ptr_eq(result, expected);
+
 // Тест 6.
 #test strrchr_empty_string
 const char* src = "";
